@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>css常用属性</title>
+    <style>
+        .block {
+            background-color: aqua;
+            width: 200px;
+            height: 100px;
+        }
+        .inline {
+            background-color: pink;
+            width: 200px;
+            height: 100px;/* 行内元素的宽高设置无效 */
+        }
+        .inline-block {
+            width: 100px;
+            height: 150px;
+        }
+        .div-inline {
+            display: inline;
+            background-color: orangered;
+        }
+        .span-inline-block {
+            display: inline-block;
+            background-color: blueviolet;
+            width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="font:bolder 50px 'Kaiti'">这是一个font复合属性示例</h1>
+    <p style="line-height:40px">这是一段长文本这是一段长文本这是一段长文本这是一段长文本这是一段长文本这是一段长文本这是一段长文本这是一段长文本这是一段长文本这是一段长文本这是一段长文本这是一段长文本这是一段长文本这是一段长文本这是一段长文本这是一段长文本这是一段长文本这是一段长文本</p>
+    <div class="block">这是一个块级元素</div>
+    <div class="block">这是一个块级元素</div>
+    <span class="inline">这是一个行内元素</span>
+    <img src="youda.gif" alt="图片" class="inline-block">
+    <img src="youda.gif" alt="图片" class="inline-block">
+    <h2>display</h2>
+    <div style="display: inline; background-color: orange">这是一个转换成行内元素的div标签</div>
+    <div class="div-inline">这是另一个转换成行内元素的div标签</div>
+    <span class="span-inline-block">这是一个转换成行内块元素的span标签</span>
+</body>
+</html>

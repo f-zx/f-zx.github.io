@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>css浮动</title>
+</head>
+<style>
+    .father {
+        background-color: blueviolet;
+        height: 150px;
+        /* 无高度会使父元素坍塌 */
+        border: 5px solid black;
+        /* overflow: hidden; */
+        /* 清除浮动 */
+    }
+
+    /* .father::after {
+        content:"";
+        display: table;
+        clear: both;
+    } */
+    .left-son {
+        width: 100px;
+        height: 100px;
+        background-color:yellow;
+        float: left;
+    }
+    .right-son {
+        width: 100px;
+        height: 100px;
+        background-color:orange;
+        float: right;
+    }
+</style>
+<body>
+    <div class="father">
+        <div class="left-son">左浮动</div>
+        <div class="left-son">左浮动</div>
+        <div class="left-son">左浮动</div>
+        <div class="right-son">右浮动</div>
+        <div class="right-son">右浮动</div>
+        <div class="right-son">右浮动</div>
+    </div>
+    <p>这是一段文本</p>
+</body>
+</html>

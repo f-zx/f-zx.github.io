@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS DOM</title>
+</head>
+<body>
+    <div id="box1">这是一个id选择器标签</div>
+    <div class="box2">这是一个类选择器标签</div>
+    <div>普通的div标签</div>
+    
+    <button>点击按钮</button>
+    
+    <script>
+        var element_id = document.getElementById('box1');
+        console.log(element_id);
+
+        var element_class = document.getElementsByClassName('box2')[0];//【0】是索引值
+        console.log(element_class);
+
+        var element_tag = document.getElementsByTagName('div')[2];//若无索引值则是3个元素的集合
+        console.log(element_tag);
+
+        element_id.innerHTML = '<a href="#">跳转链接（假的）</a>';//能识别
+        element_class.innerText = '<a href="#">跳转链接（假的）</a>';//不能识别，会忽略HTML标记，纯文本输出
+
+        element_tag.style.color = "red";
+        element_tag.style.fontSize = '50px';
+
+        // DOM 属性绑定事件
+        var button_element =document.getElementsByTagName('button')[0];
+        console.log(button_element);
+
+        // button_element.onclick = function(){
+        //     alert("DOM 属性按键触发");
+        // }//方法 1
+
+        button_element.addEventListener('click',function(){
+        alert("通过 addEventListener 触发按键");
+    })//方法 2
+    // 也可以在下面单独定义function
+    //     button_element.addEventListener('click',click_event)
+    //         function click_event(){
+    //             alert("通过 addEventListener 触发按键");
+    //     }
+
+
+
+    </script>
+</body>
+</html>

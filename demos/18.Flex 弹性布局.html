@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flex 弹性布局</title>
+    <style>
+        html{
+            font-size: 10px;
+        }
+        .container {
+            display: flex;
+            height : 40rem;
+            background-color: aqua;
+
+            /*横向翻转 */
+            /* flex-direction: row-reverse; */
+            /*纵向翻转 */
+            /* flex-direction: column-reverse; */
+            /*纵向排列 */
+            /* flex-direction: column; */
+            /*换行显示*/
+            /* flex-wrap: wrap; */
+            /*warp-reverse从上到下换行*/
+            justify-content: center;
+            /*横向居中*/
+            /*flex-start:左对齐 flex-end:右对齐 center:居中 
+            space-between:两端对齐 space-around:平均分配*/
+            align-items: center;
+            /*纵向居中*/
+            /*flex-start:顶部对齐 flex-end:底部对齐 center:居中
+            baseline:基线对齐 stretch:拉伸(默认)*/
+        }
+
+        .item{
+            width: 10rem;
+            font-size: 8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="item" style="background-color: yellowgreen;">1</div>
+        <div class="item" style="background-color: red;">2</div>
+        <div class="item" style="background-color: gray;">3</div>
+        <div class="item" style="background-color: gold;">4</div>
+        <div class="item" style="background-color: brown;">5</div>
+        <div class="item" style="background-color: blueviolet;">6</div>
+    </div>
+</body>
+</html>

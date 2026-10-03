@@ -1,0 +1,501 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Web 前端学习笔记（四）：JavaScript 基础 | Fzx's blog</title><meta name="author" content="Fzx"><meta name="copyright" content="Fzx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="JavaScript 入门练习整理：三种导入方式、基本语法与作用域、事件绑定、DOM 查找与节点增删改查、移动端 rem 适配原理，附可在线运行的 demo。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web 前端学习笔记（四）：JavaScript 基础">
+<meta property="og:url" content="https://f-zx.github.io/2026/10/03/web-frontend-04-js-basics/index.html">
+<meta property="og:site_name" content="Fzx&#39;s blog">
+<meta property="og:description" content="JavaScript 入门练习整理：三种导入方式、基本语法与作用域、事件绑定、DOM 查找与节点增删改查、移动端 rem 适配原理，附可在线运行的 demo。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://f-zx.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-10-03T15:45:00.000Z">
+<meta property="article:modified_time" content="2026-10-03T15:19:29.219Z">
+<meta property="article:author" content="Fzx">
+<meta property="article:tag" content="DOM">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="Web前端">
+<meta property="article:tag" content="学习笔记">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://f-zx.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Web 前端学习笔记（四）：JavaScript 基础",
+  "url": "https://f-zx.github.io/2026/10/03/web-frontend-04-js-basics/",
+  "image": "https://f-zx.github.io/img/touxiang.jpg",
+  "datePublished": "2026-10-03T15:45:00.000Z",
+  "dateModified": "2026-10-03T15:19:29.219Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Fzx",
+      "url": "https://f-zx.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://f-zx.github.io/2026/10/03/web-frontend-04-js-basics/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.6.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Web 前端学习笔记（四）：JavaScript 基础',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div class="bg-animation" id="web_bg" style="background: linear-gradient(20deg,#0062be,#925696,#cc426e,#fb0347);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(135deg,#00b4d8 0%,#48cae4 35%,#00f5d4 65%,#72efdd 100%);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Fzx's blog</span></a><a class="nav-page-title" href="/"><span class="site-name">Web 前端学习笔记（四）：JavaScript 基础</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Web 前端学习笔记（四）：JavaScript 基础</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-10-03T15:45:00.000Z" title="发表于 2026-10-03 23:45:00">2026-10-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-10-03T15:19:29.219Z" title="更新于 2026-10-03 23:19:29">2026-10-03</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%89%8D%E7%AB%AF%E7%AC%94%E8%AE%B0/">前端笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>系列最后一篇。HTML 管结构、CSS 管样式，JavaScript 负责<strong>行为</strong>——响应用户操作、修改页面内容。每节同样附了可运行的 demo。</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="一、三种导入方式"><a href="#一、三种导入方式" class="headerlink" title="一、三种导入方式"></a>一、三种导入方式</h2><p><a href="/demos/11.JS%E5%AF%BC%E5%85%A5%E6%96%B9%E5%BC%8F.html">demo 11：JS 导入方式</a></p>
+<p>和 CSS 类似，JS 也有三种写进页面的方式：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 1. 写在 head 里的内联脚本 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello,Head标签内联样式&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 2. 外部文件 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;./js/myscript.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h1</span>&gt;</span>JavaScript 的导入方式<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 3. 写在 body 里的内联脚本 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello,body标签的内联样式&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">        <span class="title function_">alert</span>(<span class="string">&quot;你好，内联样式弹窗&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>外部的 <code>js/myscript.js</code> 内容也很简单：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello,外联样式&quot;</span>);</span><br><span class="line"><span class="title function_">alert</span>(<span class="string">&quot;你好，外联样式弹窗&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>打开 demo 后按 <strong>F12</strong> 打开控制台，就能看到四行输出（<code>console.log</code> 的内容不会显示在页面上，只在控制台里）。</p>
+<h3 id="script-为什么要放在-body-末尾"><a href="#script-为什么要放在-body-末尾" class="headerlink" title="script 为什么要放在 body 末尾"></a>script 为什么要放在 body 末尾</h3><p>demo 里的脚本只是打印日志，所以写在 <code>head</code> 里没问题。但一旦脚本要<strong>操作页面元素</strong>，就必须放在 <code>body</code> 末尾：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;box&quot;</span>&gt;</span>内容<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="comment">// 如果这段脚本放在 head 里，执行时 #box 还不存在，会报 null 错误</span></span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;box&#x27;</span>).<span class="property">innerHTML</span> = <span class="string">&#x27;新内容&#x27;</span>;</span></span><br><span class="line"><span class="language-javascript">    </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>浏览器是从上往下解析 HTML 的。放在 <code>head</code> 的脚本执行时，<code>&lt;body&gt;</code> 里的元素还没被创建出来，自然找不到。放在末尾就能保证元素都已就绪。</p>
+<div class="note info flat"><p>另一种做法是给 <code>&lt;script&gt;</code> 加 <code>defer</code> 或 <code>async</code> 属性，或者把代码包进 <code>DOMContentLoaded</code> 事件里。但<strong>放进 body 末尾</strong>是最简单、最容易理解的方式，初学阶段推荐就用这个。</p>
+</div>
+
+<h2 id="二、基本语法"><a href="#二、基本语法" class="headerlink" title="二、基本语法"></a>二、基本语法</h2><p><a href="/demos/12.JS%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95.html">demo 12：JS 基本语法</a></p>
+<h3 id="声明变量：var-let-const"><a href="#声明变量：var-let-const" class="headerlink" title="声明变量：var &#x2F; let &#x2F; const"></a>声明变量：var &#x2F; let &#x2F; const</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> x;              <span class="comment">// undefined（未赋值）</span></span><br><span class="line"><span class="keyword">let</span> y = <span class="number">5</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="variable constant_">PI</span> = <span class="number">3.14</span>;</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(x, y, <span class="variable constant_">PI</span>);   <span class="comment">// undefined 5 3.14</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>关键字</th>
+<th>能否重新赋值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>var</code></td>
+<td>能</td>
+<td>老写法，作用域规则容易出问题，<strong>现在基本不用</strong></td>
+</tr>
+<tr>
+<td><code>let</code></td>
+<td>能</td>
+<td>现代写法的默认选择</td>
+</tr>
+<tr>
+<td><code>const</code></td>
+<td><strong>不能</strong></td>
+<td>声明常量，值不会变就用它</td>
+</tr>
+</tbody></table>
+<p>选择顺序很简单：<strong>先想 <code>const</code>，确实需要改再换 <code>let</code>，<code>var</code> 就别用了</strong>。这样能避免不小心覆盖变量的值。</p>
+<h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> name = <span class="string">&quot;何意味&quot;</span>;        <span class="comment">// 字符串</span></span><br><span class="line"><span class="keyword">let</span> empty_value = <span class="literal">null</span>;     <span class="comment">// 空值：主动赋值为&quot;没有&quot;</span></span><br><span class="line"><span class="keyword">let</span> age = <span class="number">9</span>;                <span class="comment">// 数字</span></span><br><span class="line"><span class="keyword">let</span> isReady = <span class="literal">true</span>;         <span class="comment">// 布尔</span></span><br></pre></td></tr></table></figure>
+
+<p><code>undefined</code> 和 <code>null</code> 容易混：<code>undefined</code> 是”声明了但没赋值”，<code>null</code> 是”我主动把它设成空”。上面 <code>var x;</code> 打印出来是 <code>undefined</code>，而 <code>empty_value</code> 是 <code>null</code>。</p>
+<h3 id="条件判断"><a href="#条件判断" class="headerlink" title="条件判断"></a>条件判断</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> age = <span class="number">9</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (age &gt; <span class="number">18</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;你已经成年了&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;未成年&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>需要多个分支时用 <code>else if</code>：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> time = <span class="number">22</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (time &lt; <span class="number">12</span>) &#123;</span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&quot;上午好&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> <span class="keyword">if</span> (time &lt; <span class="number">18</span>) &#123;</span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&quot;下午好&quot;</span>);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&quot;晚上好&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>if</code> 的判断条件会从上往下依次检查，<strong>命中一个就跳出</strong>，后面的即使也成立也不会执行。</p>
+<h3 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// for 循环：适合次数已知的场景</span></span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">1</span>; i &lt;= <span class="number">10</span>; i++) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// while 循环：适合&quot;条件满足就一直做&quot;的场景</span></span><br><span class="line"><span class="keyword">let</span> index = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">while</span> (index &lt;= <span class="number">10</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(index);</span><br><span class="line">    index++;        <span class="comment">// 千万别忘，否则死循环</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>for</code> 的三个部分用分号隔开：<strong>初始化；条件；每轮结束后执行</strong>。<code>while</code> 则需要自己在循环体里改变条件变量，忘了 <code>index++</code> 就会把浏览器卡死。</p>
+<h3 id="break-和-continue"><a href="#break-和-continue" class="headerlink" title="break 和 continue"></a>break 和 continue</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; <span class="number">7</span>; i++) &#123;</span><br><span class="line">    <span class="keyword">if</span> (i == <span class="number">2</span>) &#123;</span><br><span class="line">        <span class="keyword">continue</span>;   <span class="comment">// 跳过本轮剩余代码，直接进入下一轮</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (i == <span class="number">5</span>) &#123;</span><br><span class="line">        <span class="keyword">break</span>;      <span class="comment">// 彻底结束整个循环</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码的输出是 <strong>0 1 3 4</strong>：</p>
+<ul>
+<li><code>i=2</code> 时被 <code>continue</code> 跳过，所以没有 2；</li>
+<li><code>i=5</code> 时被 <code>break</code> 终止，所以 5 和 6 都不输出。</li>
+</ul>
+<p>一句话区分：<code>continue</code> 是”这一轮不干了”，<code>break</code> 是”全都不干了”。</p>
+<h2 id="三、函数与作用域"><a href="#三、函数与作用域" class="headerlink" title="三、函数与作用域"></a>三、函数与作用域</h2><p><a href="/demos/13.JS%20%E5%87%BD%E6%95%B0.html">demo 13：JS 函数</a></p>
+<h3 id="三种常见形态"><a href="#三种常见形态" class="headerlink" title="三种常见形态"></a>三种常见形态</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 无参数、无返回值</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">hello</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;Hello,world!&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">hello</span>();        <span class="comment">// 调用函数，括号不能省</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 有返回值</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">hello_with_return</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;Hello,world! - 返回值&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> a = <span class="title function_">hello_with_return</span>();     <span class="comment">// 把返回值存进变量</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(a);</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="title function_">hello_with_return</span>()); <span class="comment">// 也可以直接打印</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 带参数</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">hello_with_params</span>(<span class="params">name</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;hello,&quot;</span> + name);</span><br><span class="line">&#125;</span><br><span class="line"><span class="title function_">hello_with_params</span>(<span class="string">&quot;LiHua&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>关键区别：<code>return</code> 会把结果<strong>交回给调用处</strong>，所以能赋值给变量；而 <code>console.log</code> 只是打印，函数本身的返回值是 <code>undefined</code>。</p>
+<h3 id="作用域"><a href="#作用域" class="headerlink" title="作用域"></a>作用域</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> global_var = <span class="string">&#x27;全局变量&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">local_var_function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> local_var = <span class="string">&#x27;局部变量&#x27;</span>;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;函数内打印全局变量    &quot;</span> + global_var);   <span class="comment">// ✅ 能访问</span></span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;函数内打印局部变量    &quot;</span> + local_var);    <span class="comment">// ✅ 能访问</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">local_var_function</span>();</span><br><span class="line"></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;全局打印全局变量    &quot;</span> + global_var);   <span class="comment">// ✅ 能访问</span></span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(local_var);                            <span class="comment">// ❌ 报错：local_var is not defined</span></span><br></pre></td></tr></table></figure>
+
+<p>规则是<strong>单向的</strong>：</p>
+<ul>
+<li>函数<strong>内部</strong>可以访问外面的全局变量；</li>
+<li>函数<strong>外部</strong>访问不到函数内部的局部变量。</li>
+</ul>
+<p>因为局部变量只在函数执行期间存在，函数一结束就销毁了。这就是”作用域链”最基本的表现——由内向外查找，不能反向。</p>
+<div class="note warning flat"><p>原练习文件里最后一行写的是 <code>console.log(&quot;全局打印局部变量==报错&quot;)</code>——它只是打印了一句字符串，<strong>并没有真的访问 <code>local_var</code>，所以不会报错</strong>。想复现 <code>local_var is not defined</code>，必须真的去引用它：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(local_var);   <span class="comment">// ReferenceError: local_var is not defined</span></span><br></pre></td></tr></table></figure></div>
+
+<h2 id="四、事件"><a href="#四、事件" class="headerlink" title="四、事件"></a>四、事件</h2><p><a href="/demos/14.JS%20%E4%BA%8B%E4%BB%B6.html">demo 14：JS 事件</a></p>
+<p>事件就是”用户做了什么”，绑定事件就是告诉浏览器”发生这件事时执行哪个函数”。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;click_event()&quot;</span>&gt;</span>这是一个点击事件按钮<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">onfocus</span>=<span class="string">&quot;focus_event()&quot;</span> <span class="attr">onblur</span>=<span class="string">&quot;blur_event()&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// 点击事件</span></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">function</span> <span class="title function_">click_event</span>(<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="title function_">alert</span>(<span class="string">&quot;点击事件触发了&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">    &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// 获得焦点（光标进入输入框）</span></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">function</span> <span class="title function_">focus_event</span>(<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;获取焦点&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">    &#125;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// 失去焦点（光标离开输入框）</span></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">function</span> <span class="title function_">blur_event</span>(<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="string">&quot;失去焦点&quot;</span>);</span></span><br><span class="line"><span class="language-javascript">    &#125;</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>三种常用事件：</p>
+<table>
+<thead>
+<tr>
+<th>事件</th>
+<th>触发时机</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>onclick</code></td>
+<td>鼠标点击</td>
+</tr>
+<tr>
+<td><code>onfocus</code></td>
+<td>元素获得焦点（光标进入）</td>
+</tr>
+<tr>
+<td><code>onblur</code></td>
+<td>元素失去焦点（光标离开）</td>
+</tr>
+</tbody></table>
+<p><code>onfocus</code> &#x2F; <code>onblur</code> 是表单校验的常用时机——比如用户离开输入框时立刻检查格式对不对。</p>
+<div class="note info flat"><p>demo 里把 <code>onclick=&quot;...&quot;</code> 直接写在 HTML 标签上，这叫<strong>内联事件绑定</strong>，优点是直观，缺点是 HTML 和 JS 混在一起不好维护。下一篇 demo 会看到更规范的做法：<code>addEventListener</code>。</p>
+</div>
+
+<h2 id="五、DOM-查找与修改"><a href="#五、DOM-查找与修改" class="headerlink" title="五、DOM 查找与修改"></a>五、DOM 查找与修改</h2><p><a href="/demos/15.JS%20DOM.html">demo 15：JS DOM</a></p>
+<p>DOM（文档对象模型）把 HTML 页面变成一棵可以用 JS 操作的对象树。要改页面，第一步永远是<strong>先找到那个元素</strong>。</p>
+<h3 id="三种查找方式"><a href="#三种查找方式" class="headerlink" title="三种查找方式"></a>三种查找方式</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;box1&quot;</span>&gt;</span>这是一个id选择器标签<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;box2&quot;</span>&gt;</span>这是一个类选择器标签<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span>&gt;</span>普通的div标签<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">button</span>&gt;</span>点击按钮<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// 按 id 查找：返回单个元素</span></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">var</span> element_id = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;box1&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// 按 class 查找：返回集合，要用 [0] 取第一个</span></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">var</span> element_class = <span class="variable language_">document</span>.<span class="title function_">getElementsByClassName</span>(<span class="string">&#x27;box2&#x27;</span>)[<span class="number">0</span>];</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="comment">// 按标签名查找：返回集合，[2] 是索引值</span></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">var</span> element_tag = <span class="variable language_">document</span>.<span class="title function_">getElementsByTagName</span>(<span class="string">&#x27;div&#x27;</span>)[<span class="number">2</span>];</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>返回</th>
+<th>注意</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>getElementById</code></td>
+<td>单个元素</td>
+<td>参数<strong>不带</strong> <code>#</code></td>
+</tr>
+<tr>
+<td><code>getElementsByClassName</code></td>
+<td>集合（类数组）</td>
+<td>参数<strong>不带</strong> <code>.</code>；要加索引取值</td>
+</tr>
+<tr>
+<td><code>getElementsByTagName</code></td>
+<td>集合（类数组）</td>
+<td>要加索引取值</td>
+</tr>
+</tbody></table>
+<p>后面两个返回的不是数组而是<strong>集合</strong>，所以不能直接当元素用。忘记加 <code>[0]</code> 是新手最常见的错误之一。</p>
+<h3 id="修改内容：innerHTML-和-innerText"><a href="#修改内容：innerHTML-和-innerText" class="headerlink" title="修改内容：innerHTML 和 innerText"></a>修改内容：innerHTML 和 innerText</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> element_id = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;box1&#x27;</span>);</span><br><span class="line"><span class="keyword">var</span> element_class = <span class="variable language_">document</span>.<span class="title function_">getElementsByClassName</span>(<span class="string">&#x27;box2&#x27;</span>)[<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// innerHTML：会把字符串当 HTML 解析</span></span><br><span class="line">element_id.<span class="property">innerHTML</span> = <span class="string">&#x27;&lt;a href=&quot;#&quot;&gt;跳转链接（假的）&lt;/a&gt;&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// innerText：纯文本，HTML 标签会被原样显示出来</span></span><br><span class="line">element_class.<span class="property">innerText</span> = <span class="string">&#x27;&lt;a href=&quot;#&quot;&gt;跳转链接（假的）&lt;/a&gt;&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>这是两者最重要的差别：</p>
+<ul>
+<li><code>innerHTML</code> 会<strong>解析 HTML</strong>，所以第一个 div 里真的出现了一个可点击的链接；</li>
+<li><code>innerText</code> 只当普通文字，第二个 div 里会原样显示 <code>&lt;a href=&quot;#&quot;&gt;...&lt;/a&gt;</code> 这串字符。</li>
+</ul>
+<div class="note warning flat"><p><code>innerHTML</code> 用起来方便，但<strong>不要用它插入用户输入的内容</strong>。用户如果输入 <code>&lt;img src=x onerror=&quot;恶意代码&quot;&gt;</code>，浏览器会真的执行——这是 XSS 攻击的经典入口。要插入用户内容，请用 <code>innerText</code> 或 <code>textContent</code>。</p>
+</div>
+
+<h3 id="修改样式"><a href="#修改样式" class="headerlink" title="修改样式"></a>修改样式</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">element_tag.<span class="property">style</span>.<span class="property">color</span> = <span class="string">&quot;red&quot;</span>;</span><br><span class="line">element_tag.<span class="property">style</span>.<span class="property">fontSize</span> = <span class="string">&#x27;50px&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<p>注意 CSS 属性名要<strong>转成小驼峰</strong>：CSS 里的 <code>font-size</code> 在 JS 里写成 <code>fontSize</code>，<code>background-color</code> 写成 <code>backgroundColor</code>。原因是 <code>font-size</code> 里的横线会被当成减号。</p>
+<h3 id="绑定事件的两种方式"><a href="#绑定事件的两种方式" class="headerlink" title="绑定事件的两种方式"></a>绑定事件的两种方式</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> button_element = <span class="variable language_">document</span>.<span class="title function_">getElementsByTagName</span>(<span class="string">&#x27;button&#x27;</span>)[<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">// 方法 1：DOM 属性绑定（同类型事件只能绑一个，后者会覆盖前者）</span></span><br><span class="line">button_element.<span class="property">onclick</span> = <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&quot;DOM 属性按键触发&quot;</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 方法 2：addEventListener（推荐，可以绑定多个）</span></span><br><span class="line">button_element.<span class="title function_">addEventListener</span>(<span class="string">&#x27;click&#x27;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="title function_">alert</span>(<span class="string">&quot;通过 addEventListener 触发按键&quot;</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><code>addEventListener</code> 的优势是<strong>同一个元素可以绑定多个同类型处理函数</strong>，它们会依次执行；而 <code>onclick = ...</code> 是赋值操作，再赋一次就把前一个覆盖了。</p>
+<div class="note info flat"><p>补充：现在更常用 <code>querySelector</code> 和 <code>querySelectorAll</code>，它们直接支持 CSS 选择器语法，比上面三个方法灵活得多：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;#box1&#x27;</span>);        <span class="comment">// 按 id 找，返回第一个</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&#x27;.box2&#x27;</span>);        <span class="comment">// 按 class 找，返回第一个</span></span><br><span class="line"><span class="variable language_">document</span>.<span class="title function_">querySelectorAll</span>(<span class="string">&#x27;div p&#x27;</span>);     <span class="comment">// 按后代选择器找，返回全部</span></span><br></pre></td></tr></table></figure></div>
+
+<h2 id="六、DOM-节点增删改查"><a href="#六、DOM-节点增删改查" class="headerlink" title="六、DOM 节点增删改查"></a>六、DOM 节点增删改查</h2><p><a href="/demos/16.JS%20DOM%E8%8A%82%E7%82%B9%E6%93%8D%E4%BD%9C.html">demo 16：表格的增删改查</a></p>
+<p>这是一个把前面的知识串起来的综合练习：用按钮动态给表格加行、改内容、删行。</p>
+<p>HTML 部分，每行末尾放两个按钮，并且把 <code>this</code> 传进去：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;addRow()&quot;</span>&gt;</span>新增数据<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">table</span> <span class="attr">id</span>=<span class="string">&quot;table&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tr</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">th</span>&gt;</span>姓名<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">th</span>&gt;</span>联系方式<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">th</span>&gt;</span>操作<span class="tag">&lt;/<span class="name">th</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">tr</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">td</span>&gt;</span>Zqh<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">td</span>&gt;</span>1145141919810<span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">td</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;editRow(this)&quot;</span>&gt;</span>编辑<span class="tag">&lt;/<span class="name">button</span>&gt;</span><span class="tag">&lt;<span class="name">button</span> <span class="attr">onclick</span>=<span class="string">&quot;deleteRow(this)&quot;</span>&gt;</span>删除<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">td</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">tr</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">table</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<div class="note info flat"><p>按钮上的 <code>this</code> 很关键——它把<strong>被点击的那个按钮元素</strong>作为参数传给函数，函数才能知道”是哪一行要操作”。</p>
+</div>
+
+<p>对应的 <code>js/table.js</code>：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 新增一行</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">addRow</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> table = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;table&#x27;</span>);</span><br><span class="line">    <span class="keyword">var</span> length = table.<span class="property">rows</span>.<span class="property">length</span>;         <span class="comment">// 当前行数，也就是新行要插入的位置</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> newRow = table.<span class="title function_">insertRow</span>(length);   <span class="comment">// 插入行节点</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> nameCol = newRow.<span class="title function_">insertCell</span>(<span class="number">0</span>);     <span class="comment">// 在新行里依次插入三个单元格</span></span><br><span class="line">    <span class="keyword">var</span> phoneCol = newRow.<span class="title function_">insertCell</span>(<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">var</span> actionCol = newRow.<span class="title function_">insertCell</span>(<span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">    nameCol.<span class="property">innerHTML</span> = <span class="string">&#x27;未命名&#x27;</span>;</span><br><span class="line">    phoneCol.<span class="property">innerHTML</span> = <span class="string">&#x27;无联系方式&#x27;</span>;</span><br><span class="line">    actionCol.<span class="property">innerHTML</span> = <span class="string">&#x27;&lt;button onclick=&quot;editRow(this)&quot;&gt;编辑&lt;/button&gt;&lt;button onclick=&quot;deleteRow(this)&quot;&gt;删除&lt;/button&gt;&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 删除一行</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">deleteRow</span>(<span class="params">button</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> row = button.<span class="property">parentNode</span>.<span class="property">parentNode</span>;   <span class="comment">// button → td → tr</span></span><br><span class="line">    row.<span class="property">parentNode</span>.<span class="title function_">removeChild</span>(row);          <span class="comment">// 从表格里移除这一行</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 编辑一行</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">editRow</span>(<span class="params">button</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> row = button.<span class="property">parentNode</span>.<span class="property">parentNode</span>;</span><br><span class="line">    <span class="keyword">var</span> name = row.<span class="property">cells</span>[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">var</span> phone = row.<span class="property">cells</span>[<span class="number">1</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> inputname = <span class="title function_">prompt</span>(<span class="string">&quot;请输入名字：&quot;</span>);</span><br><span class="line">    <span class="keyword">var</span> inputphone = <span class="title function_">prompt</span>(<span class="string">&quot;请输入联系方式：&quot;</span>);</span><br><span class="line"></span><br><span class="line">    name.<span class="property">innerHTML</span> = inputname;</span><br><span class="line">    phone.<span class="property">innerHTML</span> = inputphone;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="三个关键-API"><a href="#三个关键-API" class="headerlink" title="三个关键 API"></a>三个关键 API</h3><table>
+<thead>
+<tr>
+<th>API</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>table.insertRow(index)</code></td>
+<td>在指定位置插入一行</td>
+</tr>
+<tr>
+<td><code>row.insertCell(index)</code></td>
+<td>在行内指定位置插入一个单元格</td>
+</tr>
+<tr>
+<td><code>parentNode.removeChild(child)</code></td>
+<td>从父节点中移除子节点</td>
+</tr>
+</tbody></table>
+<h3 id="用-parentNode-往回找"><a href="#用-parentNode-往回找" class="headerlink" title="用 parentNode 往回找"></a>用 parentNode 往回找</h3><p><code>deleteRow</code> 和 <code>editRow</code> 里都有一句 <code>button.parentNode.parentNode</code>，这是<strong>从按钮反推所在行</strong>的固定套路：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">button（按钮）</span><br><span class="line">   ↑ parentNode</span><br><span class="line">  td（单元格）</span><br><span class="line">   ↑ parentNode</span><br><span class="line">  tr（表格行）← 我们要操作的目标</span><br></pre></td></tr></table></figure>
+
+<p>因为点击事件只能拿到按钮本身，要操作整行就必须往上爬两层。DOM 树是双向的：既能用 <code>children</code> 往下找，也能用 <code>parentNode</code> 往上找。</p>
+<div class="note warning flat"><p><code>prompt</code> 在用户点”取消”时返回的是 <code>null</code>，直接赋值会把单元格内容变成字符串 <code>&quot;null&quot;</code>。实际项目里应该加个判断：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (inputname !== <span class="literal">null</span>) &#123;</span><br><span class="line">    name.<span class="property">innerHTML</span> = inputname;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></div>
+
+<h2 id="七、移动端-rem-适配"><a href="#七、移动端-rem-适配" class="headerlink" title="七、移动端 rem 适配"></a>七、移动端 rem 适配</h2><p><a href="/demos/17.%E7%A7%BB%E5%8A%A8%E7%AB%AF%20rem%20%E9%80%82%E9%85%8D%E5%8E%9F%E7%90%86.html">demo 17：移动端 rem 适配原理</a></p>
+<p>这是系列里最”实用”的一个练习，解决的是<strong>同一套代码如何适配不同宽度的手机屏幕</strong>。</p>
+<h3 id="px-的问题"><a href="#px-的问题" class="headerlink" title="px 的问题"></a>px 的问题</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box-px</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">300px</span>;       <span class="comment">/* 写死的像素 */</span></span><br><span class="line">    <span class="attribute">height</span>: <span class="number">100px</span>;</span><br><span class="line">    <span class="attribute">background-color</span>: blueviolet;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>px</code> 是绝对单位。在 375px 宽的手机上，300px 占了 80% 的宽度；换到 414px 的手机上就只占 72%——比例变了，看起来就不一致。</p>
+<h3 id="rem-是什么"><a href="#rem-是什么" class="headerlink" title="rem 是什么"></a>rem 是什么</h3><p><code>rem</code> 是<strong>相对于根元素 <code>html</code> 的 <code>font-size</code></strong> 的单位：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">html</span> &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">20px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.box-rem</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">5rem</span>;    <span class="comment">/* 5 × 20px = 100px */</span></span><br><span class="line">    <span class="attribute">height</span>: <span class="number">3rem</span>;   <span class="comment">/* 3 × 20px = 60px */</span></span><br><span class="line">    <span class="attribute">background-color</span>: yellow;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>只要改 <code>html</code> 的 <code>font-size</code>，所有用 <code>rem</code> 写的尺寸会<strong>整体等比缩放</strong>。这就给了我们一个可调节的”缩放旋钮”。</p>
+<h3 id="动态设置缩放基准"><a href="#动态设置缩放基准" class="headerlink" title="动态设置缩放基准"></a>动态设置缩放基准</h3><p>把屏幕宽度平均分成 10 份，让 <code>1rem</code> 等于其中一份：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 根据设备宽度计算 html 标签的 font-size 属性值</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">resetHTMLFontSize</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">style</span>.<span class="property">fontSize</span> = screen.<span class="property">width</span> / <span class="number">10</span> + <span class="string">&#x27;px&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">resetHTMLFontSize</span>();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 窗口尺寸变化时重新计算</span></span><br><span class="line"><span class="variable language_">window</span>.<span class="property">onresize</span> = resetHTMLFontSize;</span><br></pre></td></tr></table></figure>
+
+<p>这样在 375px 宽的设备上，<code>1rem = 37.5px</code>；在 414px 上 <code>1rem = 41.4px</code>。设计稿上量出多少 rem，在任何手机上占的比例都一样。</p>
+<p>前面 Flex 那篇里写的 <code>html &#123; font-size: 10px; &#125;</code> 是把基准<strong>写死</strong>（1rem &#x3D; 10px，纯粹为了好算）；这里则是<strong>跟着屏幕宽度动态变</strong>。两者用途不同：前者方便换算，后者用于适配。</p>
+<div class="note warning flat"><p>原文件标题里的 “rom” 是 <code>rem</code> 的笔误。</p>
+<p>另外这段代码用的是 <code>screen.width</code>（<strong>设备屏幕</strong>宽度），它不会随浏览器窗口大小改变。所以在电脑上拖动窗口时 <code>onresize</code> 触发的重算结果其实没变化，看不出效果——真机或手机模拟器下才明显。</p>
+<p>如果想用<strong>视口</strong>宽度（更符合直觉，桌面端也能看到效果），应该改成：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">style</span>.<span class="property">fontSize</span> = <span class="variable language_">document</span>.<span class="property">documentElement</span>.<span class="property">clientWidth</span> / <span class="number">10</span> + <span class="string">&#x27;px&#x27;</span>;</span><br></pre></td></tr></table></figure></div>
+
+<div class="note info flat"><p><code>rem</code> 需要手动换算，写起来略麻烦，所以现在更流行 <code>vw</code> 方案（<code>1vw</code> 就等于视口宽度的 1%，不需要 JS 参与），或者用 PostCSS 插件自动把设计稿的 px 转成 rem。理解了 rem 的原理，这些方案都是同一个思路的变体。</p>
+</div>
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><table>
+<thead>
+<tr>
+<th>知识点</th>
+<th>核心记忆点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>导入方式</td>
+<td>操作 DOM 的脚本放 <code>body</code> 末尾；用 F12 控制台看输出</td>
+</tr>
+<tr>
+<td>基本语法</td>
+<td>优先 <code>const</code>，其次 <code>let</code>；<code>continue</code> 跳过本轮，<code>break</code> 结束循环</td>
+</tr>
+<tr>
+<td>函数作用域</td>
+<td>函数内能访问外面的变量，外面访问不到函数内的</td>
+</tr>
+<tr>
+<td>事件</td>
+<td><code>onclick</code> &#x2F; <code>onfocus</code> &#x2F; <code>onblur</code>；推荐 <code>addEventListener</code></td>
+</tr>
+<tr>
+<td>DOM 查找</td>
+<td><code>getElementById</code> 返回单个，另外两个返回集合要加索引</td>
+</tr>
+<tr>
+<td>innerHTML</td>
+<td>会解析 HTML，有 XSS 风险，不要用于用户输入</td>
+</tr>
+<tr>
+<td>增删改查</td>
+<td><code>insertRow</code> &#x2F; <code>insertCell</code> &#x2F; <code>removeChild</code>；<code>parentNode</code> 往上找</td>
+</tr>
+<tr>
+<td>rem 适配</td>
+<td><code>1rem</code> &#x3D; <code>html</code> 的 <code>font-size</code>，改基准即可整体缩放</td>
+</tr>
+</tbody></table>
+<h2 id="四篇总结"><a href="#四篇总结" class="headerlink" title="四篇总结"></a>四篇总结</h2><p>整个系列走下来，前端的三个层次已经很清楚了：</p>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>负责</th>
+<th>核心内容</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>HTML</td>
+<td>结构</td>
+<td>标签、属性、表单</td>
+</tr>
+<tr>
+<td>CSS</td>
+<td>样式</td>
+<td>选择器、盒子模型、布局</td>
+</tr>
+<tr>
+<td>JavaScript</td>
+<td>行为</td>
+<td>语法、事件、DOM 操作</td>
+</tr>
+</tbody></table>
+<p>这三者里，<strong>CSS 布局和 DOM 操作是新手最容易卡住的地方</strong>——浮动的高度坍塌、定位的参照物、集合忘记加索引，都是必踩的坑。把 demo 挨个改一改、故意改坏再修好，比只看代码印象深得多。</p>
+<p>本系列的 demo 我都放在博客里可以直接运行，见每节开头的链接。</p>
+<hr>
+<p><strong>本系列其他文章</strong></p>
+<ul>
+<li><a href="/2026/10/03/web-frontend-01-html-basics/">Web 前端学习笔记（一）：HTML 基础</a></li>
+<li><a href="/2026/10/03/web-frontend-02-css-basics/">Web 前端学习笔记（二）：CSS 基础</a></li>
+<li><a href="/2026/10/03/web-frontend-03-css-layout/">Web 前端学习笔记（三）：CSS 布局（浮动 · 定位 · Flex）</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://f-zx.github.io">Fzx</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://f-zx.github.io/2026/10/03/web-frontend-04-js-basics/">https://f-zx.github.io/2026/10/03/web-frontend-04-js-basics/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://f-zx.github.io" target="_blank">Fzx's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Web%E5%89%8D%E7%AB%AF/">Web前端</a><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a><a class="post-meta__tags" href="/tags/JavaScript/">JavaScript</a><a class="post-meta__tags" href="/tags/DOM/">DOM</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/10/03/web-frontend-03-css-layout/" title="Web 前端学习笔记（三）：CSS 布局（浮动 · 定位 · Flex）"><img class="cover" src="/img/touxiang.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Web 前端学习笔记（三）：CSS 布局（浮动 · 定位 · Flex）</div></div><div class="info-2"><div class="info-item-1"> 浮动、定位、Flex 解决的是同一类问题——把元素摆到想要的位置，只是属于不同年代的方案。放在一起对比，比分开学更容易记住各自适合什么场景。    一、浮动 floatdemo 9：CSS 浮动 float 最初的用途是实现”文字环绕图片”的效果（就像杂志排版），后来被大量拿来搭多列布局。它的取值很简单： 123456789101112.left-son &#123;    width: 100px;    height: 100px;    background-color: yellow;    float: left;        /* 向左浮动 */&#125;.right-son &#123;    width: 100px;    height: 100px;    background-color: orange;    float: right;       /* 向右浮动 */&#125;  浮动的元素会尽量靠向指定方向，多个同向浮动元素会依次紧贴排列，一行放不下就换行。 半脱离文档流浮动元素会”浮”起来：它原来占据的位置会让给后面的元素，但行内内容（文字）...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/10/03/web-frontend-03-css-layout/" title="Web 前端学习笔记（三）：CSS 布局（浮动 · 定位 · Flex）"><img class="cover" src="/img/touxiang.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-03</div><div class="info-item-2">Web 前端学习笔记（三）：CSS 布局（浮动 · 定位 · Flex）</div></div><div class="info-2"><div class="info-item-1"> 浮动、定位、Flex 解决的是同一类问题——把元素摆到想要的位置，只是属于不同年代的方案。放在一起对比，比分开学更容易记住各自适合什么场景。    一、浮动 floatdemo 9：CSS 浮动 float 最初的用途是实现”文字环绕图片”的效果（就像杂志排版），后来被大量拿来搭多列布局。它的取值很简单： 123456789101112.left-son &#123;    width: 100px;    height: 100px;    background-color: yellow;    float: left;        /* 向左浮动 */&#125;.right-son &#123;    width: 100px;    height: 100px;    background-color: orange;    float: right;       /* 向右浮动 */&#125;  浮动的元素会尽量靠向指定方向，多个同向浮动元素会依次紧贴排列，一行放不下就换行。 半脱离文档流浮动元素会”浮”起来：它原来占据的位置会让给后面的元素，但行内内容（文字）...</div></div></div></a><a class="pagination-related" href="/2026/10/03/web-frontend-02-css-basics/" title="Web 前端学习笔记（二）：CSS 基础"><img class="cover" src="/img/touxiang.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-03</div><div class="info-item-2">Web 前端学习笔记（二）：CSS 基础</div></div><div class="info-2"><div class="info-item-1"> 上一篇整理了 HTML 的结构，这一篇进入 CSS ——负责”长什么样”的部分。同样，每节都附了可以直接打开的 demo。    一、三种导入方式demo 5：CSS 导入方式 CSS 有三种写进页面的方式： 1. 外部样式 —— 单独写成 .css 文件，用 &lt;link&gt; 引入。实际项目里基本都用这种，因为可以被多个页面复用，也能被浏览器缓存。 1&lt;link rel=&quot;stylesheet&quot; href=&quot;css/style.css&quot;&gt;  1234/* css/style.css */h3 &#123;    color: yellow;&#125;  2. 内部样式 —— 写在 &lt;head&gt; 里的 &lt;style&gt; 标签中，只对当前页面生效。 123456789&lt;style&gt;    p &#123;        color: blue;        font-size: 25px;    &#125;    h2 &#123;        color: pink;    &...</div></div></div></a><a class="pagination-related" href="/2026/10/03/web-frontend-01-html-basics/" title="Web 前端学习笔记（一）：HTML 基础"><img class="cover" src="/img/touxiang.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-03</div><div class="info-item-2">Web 前端学习笔记（一）：HTML 基础</div></div><div class="info-2"><div class="info-item-1"> 这是我练习 Web 前端时整理的笔记，原文是一批可以单独打开的 HTML 练习文件。这里按知识点重新组织，每节都附了能直接点击运行的 demo，方便对照效果。  这篇文章覆盖 HTML 最基础的四个部分：文本标签、属性、区块、表单。   一、常见文本标签demo 1：常见文本标签 标题与段落HTML 提供六级标题，数字越小级别越高、字号越大： 1234567&lt;h1&gt;一级标题标签&lt;/h1&gt;&lt;h2&gt;二级标题标签&lt;/h2&gt;&lt;h3&gt;三级标题标签&lt;/h3&gt;&lt;h4&gt;四级标题标签&lt;/h4&gt;&lt;h5&gt;五级标题标签&lt;/h5&gt;&lt;h6&gt;六级标题标签&lt;/h6&gt;&lt;p&gt;这是一个段落标签&lt;/p&gt;  一个页面里 h1 通常只用一次（它代表页面主标题），其余按层级递减。这不只是风格问题，搜索引擎和无障碍工具都依赖标题层级来理解页面结构。 文本样式标签123&lt;p&gt;    更改文本样式：&lt;b&gt;字体加粗&lt;/b&gt;、&lt...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Fzx</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/f-zx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/f-zx" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:1280265757@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E4%B8%89%E7%A7%8D%E5%AF%BC%E5%85%A5%E6%96%B9%E5%BC%8F"><span class="toc-number">1.</span> <span class="toc-text">一、三种导入方式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#script-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E6%94%BE%E5%9C%A8-body-%E6%9C%AB%E5%B0%BE"><span class="toc-number">1.1.</span> <span class="toc-text">script 为什么要放在 body 末尾</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">二、基本语法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A3%B0%E6%98%8E%E5%8F%98%E9%87%8F%EF%BC%9Avar-let-const"><span class="toc-number">2.1.</span> <span class="toc-text">声明变量：var &#x2F; let &#x2F; const</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">2.2.</span> <span class="toc-text">数据类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD"><span class="toc-number">2.3.</span> <span class="toc-text">条件判断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AA%E7%8E%AF"><span class="toc-number">2.4.</span> <span class="toc-text">循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#break-%E5%92%8C-continue"><span class="toc-number">2.5.</span> <span class="toc-text">break 和 continue</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E5%87%BD%E6%95%B0%E4%B8%8E%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">3.</span> <span class="toc-text">三、函数与作用域</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E5%B8%B8%E8%A7%81%E5%BD%A2%E6%80%81"><span class="toc-number">3.1.</span> <span class="toc-text">三种常见形态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">3.2.</span> <span class="toc-text">作用域</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E4%BA%8B%E4%BB%B6"><span class="toc-number">4.</span> <span class="toc-text">四、事件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81DOM-%E6%9F%A5%E6%89%BE%E4%B8%8E%E4%BF%AE%E6%94%B9"><span class="toc-number">5.</span> <span class="toc-text">五、DOM 查找与修改</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E7%A7%8D%E6%9F%A5%E6%89%BE%E6%96%B9%E5%BC%8F"><span class="toc-number">5.1.</span> <span class="toc-text">三种查找方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%86%85%E5%AE%B9%EF%BC%9AinnerHTML-%E5%92%8C-innerText"><span class="toc-number">5.2.</span> <span class="toc-text">修改内容：innerHTML 和 innerText</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E6%A0%B7%E5%BC%8F"><span class="toc-number">5.3.</span> <span class="toc-text">修改样式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%91%E5%AE%9A%E4%BA%8B%E4%BB%B6%E7%9A%84%E4%B8%A4%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="toc-number">5.4.</span> <span class="toc-text">绑定事件的两种方式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81DOM-%E8%8A%82%E7%82%B9%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5"><span class="toc-number">6.</span> <span class="toc-text">六、DOM 节点增删改查</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E4%B8%AA%E5%85%B3%E9%94%AE-API"><span class="toc-number">6.1.</span> <span class="toc-text">三个关键 API</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8-parentNode-%E5%BE%80%E5%9B%9E%E6%89%BE"><span class="toc-number">6.2.</span> <span class="toc-text">用 parentNode 往回找</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E7%A7%BB%E5%8A%A8%E7%AB%AF-rem-%E9%80%82%E9%85%8D"><span class="toc-number">7.</span> <span class="toc-text">七、移动端 rem 适配</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#px-%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">7.1.</span> <span class="toc-text">px 的问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rem-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">7.2.</span> <span class="toc-text">rem 是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%AE%BE%E7%BD%AE%E7%BC%A9%E6%94%BE%E5%9F%BA%E5%87%86"><span class="toc-number">7.3.</span> <span class="toc-text">动态设置缩放基准</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%8F%E7%BB%93"><span class="toc-number">8.</span> <span class="toc-text">小结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E7%AF%87%E6%80%BB%E7%BB%93"><span class="toc-number">9.</span> <span class="toc-text">四篇总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/10/03/web-frontend-04-js-basics/" title="Web 前端学习笔记（四）：JavaScript 基础"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web 前端学习笔记（四）：JavaScript 基础"/></a><div class="content"><a class="title" href="/2026/10/03/web-frontend-04-js-basics/" title="Web 前端学习笔记（四）：JavaScript 基础">Web 前端学习笔记（四）：JavaScript 基础</a><time datetime="2026-10-03T15:45:00.000Z" title="发表于 2026-10-03 23:45:00">2026-10-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/03/web-frontend-03-css-layout/" title="Web 前端学习笔记（三）：CSS 布局（浮动 · 定位 · Flex）"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web 前端学习笔记（三）：CSS 布局（浮动 · 定位 · Flex）"/></a><div class="content"><a class="title" href="/2026/10/03/web-frontend-03-css-layout/" title="Web 前端学习笔记（三）：CSS 布局（浮动 · 定位 · Flex）">Web 前端学习笔记（三）：CSS 布局（浮动 · 定位 · Flex）</a><time datetime="2026-10-03T15:35:00.000Z" title="发表于 2026-10-03 23:35:00">2026-10-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/03/web-frontend-02-css-basics/" title="Web 前端学习笔记（二）：CSS 基础"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web 前端学习笔记（二）：CSS 基础"/></a><div class="content"><a class="title" href="/2026/10/03/web-frontend-02-css-basics/" title="Web 前端学习笔记（二）：CSS 基础">Web 前端学习笔记（二）：CSS 基础</a><time datetime="2026-10-03T15:25:00.000Z" title="发表于 2026-10-03 23:25:00">2026-10-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/03/web-frontend-01-html-basics/" title="Web 前端学习笔记（一）：HTML 基础"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web 前端学习笔记（一）：HTML 基础"/></a><div class="content"><a class="title" href="/2026/10/03/web-frontend-01-html-basics/" title="Web 前端学习笔记（一）：HTML 基础">Web 前端学习笔记（一）：HTML 基础</a><time datetime="2026-10-03T15:15:00.000Z" title="发表于 2026-10-03 23:15:00">2026-10-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/03/deepseek-auto-generated-article/" title="deepseek自主生成文章示例"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="deepseek自主生成文章示例"/></a><div class="content"><a class="title" href="/2026/10/03/deepseek-auto-generated-article/" title="deepseek自主生成文章示例">deepseek自主生成文章示例</a><time datetime="2026-10-03T14:53:26.000Z" title="发表于 2026-10-03 22:53:26">2026-10-03</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Fzx</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.6.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.6.0"></script><script src="/js/main.js?v=5.6.0"></script><div class="js-pjax"></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-show-text.min.js" data-mobile="true" data-text="THIS,IS,MY,BLOG" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
