@@ -1,0 +1,26 @@
+/* ============================================================
+   自定义样式
+   由 _config.butterfly.yml 的 inject.head 引入。
+   放在站点 source/ 下，主题升级（git pull）不会覆盖。
+   ============================================================ */
+
+/* ------------------------------------------------------------
+   侧栏「最新文章」小缩略图：固定用 youda.gif
+
+   背景：Butterfly 的首页卡片和侧栏缩略图读的是同一个字段
+   article.cover（见 mixins/indexPostUI.pug:11 与
+   widget/card_recent_post.pug:13），配置层面无法分开。
+   所以这里隐藏原本的 img，改用容器背景图把这一处钉死。
+
+   若想换成别的图，只改下面 url() 里的路径即可。
+   ------------------------------------------------------------ */
+.card-recent-post .aside-list-item .thumbnail img {
+  display: none;
+}
+
+.card-recent-post .aside-list-item .thumbnail {
+  background-image: url("/img/youda.gif");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
