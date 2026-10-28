@@ -24,3 +24,119 @@
   background-size: cover;
   background-repeat: no-repeat;
 }
+
+/* ============================================================
+   期末复习专题：专用视觉组件
+   颜色全部基于主题的 CSS 变量 + 半透明色，
+   配合 [data-theme="dark"] 微调，亮色/暗色都能看。
+   ============================================================ */
+
+/* --- 考点信息条：题型 / 分值 / 必考标记 --- */
+.exam-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0.2rem 0 1.1rem;
+}
+
+.exam-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  font-size: 12px;
+  line-height: 18px;
+  border-radius: 999px;
+  white-space: nowrap;
+  background: var(--search-bg);
+  color: var(--card-meta);
+  border: 1px solid var(--tab-border-color);
+}
+
+.exam-badge.must {
+  background: rgba(244, 116, 102, 0.12);
+  border-color: rgba(244, 116, 102, 0.4);
+  color: #f47466;
+  font-weight: 600;
+}
+
+.exam-badge.score {
+  background: rgba(73, 177, 245, 0.12);
+  border-color: rgba(73, 177, 245, 0.4);
+  color: #2d8cf0;
+  font-weight: 600;
+}
+
+/* --- 记忆口诀（橙）：把一段规则压缩成一句话 --- */
+.mnemonic {
+  margin: 1.1rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid #f0a020;
+  border-radius: 0 8px 8px 0;
+  background: rgba(240, 160, 32, 0.09);
+  color: var(--font-color);
+  line-height: 1.85;
+}
+
+.mnemonic-label {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 0 8px;
+  font-size: 12px;
+  line-height: 20px;
+  border-radius: 4px;
+  background: #f0a020;
+  color: #fff;
+  vertical-align: 2px;
+}
+
+/* --- 高频易错点（红） --- */
+.pitfall {
+  margin: 1.1rem 0;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid #f47466;
+  border-radius: 0 8px 8px 0;
+  background: rgba(244, 116, 102, 0.08);
+  color: var(--font-color);
+  line-height: 1.85;
+}
+
+.pitfall-label {
+  display: inline-block;
+  margin-right: 8px;
+  padding: 0 8px;
+  font-size: 12px;
+  line-height: 20px;
+  border-radius: 4px;
+  background: #f47466;
+  color: #fff;
+  vertical-align: 2px;
+}
+
+/* --- 暗色模式：提高彩色底的亮度，避免糊成一团 --- */
+[data-theme="dark"] .mnemonic {
+  background: rgba(240, 160, 32, 0.15);
+}
+
+[data-theme="dark"] .pitfall {
+  background: rgba(244, 116, 102, 0.15);
+}
+
+[data-theme="dark"] .exam-badge.score {
+  color: #6ab7f5;
+}
+
+[data-theme="dark"] .exam-badge.must {
+  color: #ff8f84;
+}
+
+/* --- 小屏：信息条不要挤成两行 --- */
+@media screen and (max-width: 768px) {
+  .exam-badge {
+    font-size: 11px;
+    padding: 1px 8px;
+  }
+
+  .mnemonic,
+  .pitfall {
+    padding: 0.6rem 0.75rem;
+  }
+}

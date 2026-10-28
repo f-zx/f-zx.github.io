@@ -1,0 +1,537 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Web 前端期末复习（五）：四大编程题模板 + 程序填空套路 | Fzx's blog</title><meta name="author" content="Fzx"><meta name="copyright" content="Fzx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="全卷 70 分的代码部分：程序填空 30 分的三类套路，加上编程题 4 个可默写模板（Grid 布局、数组过滤平均、倒计时按钮、fetch 模板渲染），每题都给了得分点和常见扣分项。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web 前端期末复习（五）：四大编程题模板 + 程序填空套路">
+<meta property="og:url" content="https://f-zx.github.io/2026/10/03/final-review-05-coding-templates/index.html">
+<meta property="og:site_name" content="Fzx&#39;s blog">
+<meta property="og:description" content="全卷 70 分的代码部分：程序填空 30 分的三类套路，加上编程题 4 个可默写模板（Grid 布局、数组过滤平均、倒计时按钮、fetch 模板渲染），每题都给了得分点和常见扣分项。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://f-zx.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-10-03T15:58:00.000Z">
+<meta property="article:modified_time" content="2026-10-28T14:30:12.709Z">
+<meta property="article:author" content="Fzx">
+<meta property="article:tag" content="CSS">
+<meta property="article:tag" content="Grid">
+<meta property="article:tag" content="JavaScript">
+<meta property="article:tag" content="期末复习">
+<meta property="article:tag" content="编程题">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://f-zx.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Web 前端期末复习（五）：四大编程题模板 + 程序填空套路",
+  "url": "https://f-zx.github.io/2026/10/03/final-review-05-coding-templates/",
+  "image": "https://f-zx.github.io/img/touxiang.jpg",
+  "datePublished": "2026-10-03T15:58:00.000Z",
+  "dateModified": "2026-10-28T14:30:12.709Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Fzx",
+      "url": "https://f-zx.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://f-zx.github.io/2026/10/03/final-review-05-coding-templates/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.6.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Web 前端期末复习（五）：四大编程题模板 + 程序填空套路',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div class="bg-animation" id="web_bg" style="background: linear-gradient(20deg,#0062be,#925696,#cc426e,#fb0347);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">12</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">19</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/review/"><i class="fa-fw fas fa-graduation-cap"></i><span> 期末复习</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(135deg,#00b4d8 0%,#48cae4 35%,#00f5d4 65%,#72efdd 100%);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Fzx's blog</span></a><a class="nav-page-title" href="/"><span class="site-name">Web 前端期末复习（五）：四大编程题模板 + 程序填空套路</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/review/"><i class="fa-fw fas fa-graduation-cap"></i><span> 期末复习</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Web 前端期末复习（五）：四大编程题模板 + 程序填空套路</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-10-03T15:58:00.000Z" title="发表于 2026-10-03 23:58:00">2026-10-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-10-28T14:30:12.709Z" title="更新于 2026-10-28 22:30:12">2026-10-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">期末复习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>这是整个系列<strong>最重要的一篇</strong>。编程 40 分 + 程序填空 30 分 &#x3D; 70 分全在这里，而它的特点是：<strong>题目是固定的，答案是模板化的</strong>。</p>
+<p>也就是说，这 70 分本质上是一道”默写题”——你背下来，就能拿。</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="一、程序填空（30-分）的三类套路"><a href="#一、程序填空（30-分）的三类套路" class="headerlink" title="一、程序填空（30 分）的三类套路"></a>一、程序填空（30 分）的三类套路</h2><p>程序填空的考法是：给一段<strong>挖了空的代码</strong>，让你补全。提纲明确说只会出这三类：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>考什么</th>
+<th>难度</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CSS 补全</td>
+<td>选择器、flex 属性、伪类</td>
+<td>低，靠认属性名</td>
+</tr>
+<tr>
+<td>Flex + 媒体查询</td>
+<td>响应式断点</td>
+<td>低，靠认 min&#x2F;max</td>
+</tr>
+<tr>
+<td>JSON.parse 的回调</td>
+<td>回调签名与返回值</td>
+<td>中，要理解逻辑</td>
+</tr>
+</tbody></table>
+<h3 id="通用套路：先读注释，再找对称"><a href="#通用套路：先读注释，再找对称" class="headerlink" title="通用套路：先读注释，再找对称"></a>通用套路：先读注释，再找对称</h3><div class="mnemonic"><span class="mnemonic-label">三看</span>
+<b>一看注释</b>——注释里往往直接说了"这里要设主轴对齐""这里处理数组"，等于给答案；<br>
+<b>二看对称</b>——代码里前面出现过的属性名，后面大概率要填同类的；<br>
+<b>三看括号</b>——CSS 冒号后面、JS 函数括号里缺什么，靠上下文推断。
+</div>
+
+<h3 id="类型一：CSS-补全"><a href="#类型一：CSS-补全" class="headerlink" title="类型一：CSS 补全"></a>类型一：CSS 补全</h3><p>常见空位就这几个，认属性名即可：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 空：开启弹性布局 */</span></span><br><span class="line"><span class="attribute">display</span>: flex;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 空：主轴方向设为垂直 */</span></span><br><span class="line"><span class="attribute">flex-direction</span>: column;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 空：主轴居中 */</span></span><br><span class="line"><span class="attribute">justify-content</span>: center;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 空：交叉轴居中 */</span></span><br><span class="line"><span class="attribute">align-items</span>: center;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 空：允许换行 */</span></span><br><span class="line"><span class="attribute">flex-wrap</span>: wrap;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 空：鼠标悬浮的伪类（注意单冒号） */</span></span><br><span class="line"><span class="selector-pseudo">:hover</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 空：清除列表样式 */</span></span><br><span class="line"><span class="attribute">list-style</span>: none;</span><br></pre></td></tr></table></figure>
+
+<h3 id="类型二：Flex-媒体查询"><a href="#类型二：Flex-媒体查询" class="headerlink" title="类型二：Flex + 媒体查询"></a>类型二：Flex + 媒体查询</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">@media</span> screen <span class="keyword">and</span> (<span class="attribute">min-width</span>: <span class="number">768px</span>) &#123;</span><br><span class="line">    <span class="comment">/* 空：视口 ≥ 768px 时生效 → 用 min-width */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>判断填 <code>min-width</code> 还是 <code>max-width</code>，就看<strong>适配方向</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>题干说</th>
+<th>填</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>“屏幕变宽时”、”移动优先”</td>
+<td><code>min-width</code>（≥）</td>
+</tr>
+<tr>
+<td>“屏幕变窄时”、”小屏适配”</td>
+<td><code>max-width</code>（≤）</td>
+</tr>
+</tbody></table>
+<h3 id="类型三：JSON-parse-回调"><a href="#类型三：JSON-parse-回调" class="headerlink" title="类型三：JSON.parse 回调"></a>类型三：JSON.parse 回调</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="title class_">JSON</span>.<span class="title function_">parse</span>(jsonStr, <span class="keyword">function</span> (<span class="params">key, value</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="title class_">Array</span>.<span class="title function_">isArray</span>(value)) &#123;</span><br><span class="line">        <span class="keyword">return</span> value;        <span class="comment">// 空：数组直接放过</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (key === <span class="string">&quot;price&quot;</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> value * <span class="number">100</span>;  <span class="comment">// 空：把价格放 100 倍</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> value;            <span class="comment">// 空：不需要改的必须原样返回</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>三个空基本就是这三件事：<strong>判断数组用 <code>Array.isArray(value)</code></strong>、<strong>修改值就 <code>return 新值</code></strong>、<strong>不改也要 <code>return value</code></strong>。</p>
+<div class="pitfall"><span class="pitfall-label">最后一个空最容易丢分</span>
+如果漏写 <code>return value</code>，整个对象的属性全都会变成 <code>undefined</code>。<br>
+记住：<b>回调函数必须每一条路径都有 return。</b>
+</div>
+
+<hr>
+<h2 id="二、编程第-1-题：Grid-多列布局（8-分）"><a href="#二、编程第-1-题：Grid-多列布局（8-分）" class="headerlink" title="二、编程第 1 题：Grid 多列布局（8 分）"></a>二、编程第 1 题：Grid 多列布局（8 分）</h2><h3 id="题目要求"><a href="#题目要求" class="headerlink" title="题目要求"></a>题目要求</h3><blockquote>
+<p>用 Grid 实现：容器内尽可能多列排列，每列<strong>最小宽度 250px</strong>，剩余空间<strong>均分</strong>给各列。</p>
+</blockquote>
+<h3 id="标准答案"><a href="#标准答案" class="headerlink" title="标准答案"></a>标准答案</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.grid-box</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: grid;</span><br><span class="line">    <span class="attribute">grid-template-columns</span>: <span class="built_in">repeat</span>(auto-fill, <span class="built_in">minmax</span>(<span class="number">250px</span>, <span class="number">1</span>fr));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.cell</span> &#123;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">120px</span>;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#666</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="得分点拆解"><a href="#得分点拆解" class="headerlink" title="得分点拆解"></a>得分点拆解</h3><table>
+<thead>
+<tr>
+<th>得分点</th>
+<th>分值</th>
+<th>代码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>开启网格</td>
+<td>2</td>
+<td><code>display: grid;</code></td>
+</tr>
+<tr>
+<td>多列自适应</td>
+<td>4</td>
+<td><code>repeat(auto-fill, minmax(250px, 1fr));</code></td>
+</tr>
+<tr>
+<td>单元格基础样式</td>
+<td>2</td>
+<td><code>height</code> &#x2F; <code>background-color</code></td>
+</tr>
+</tbody></table>
+<div class="pitfall"><span class="pitfall-label">常见扣分</span>
+① 把 <code>auto-fill</code> 写成 <code>auto-fit</code>（题目写了 fill 就照抄，别改）；<br>
+② <code>minmax(250px, 1fr)</code> 的括号漏了，或者写成 <code>minmax(250px 1fr)</code>（逗号不能少）；<br>
+③ 写成 <code>grid-template-columns: repeat(3, 1fr)</code>——这是固定 3 列，不满足"尽可能多列"。
+</div>
+
+<hr>
+<h2 id="三、编程第-2-题：过滤小于平均值的元素（8-分）"><a href="#三、编程第-2-题：过滤小于平均值的元素（8-分）" class="headerlink" title="三、编程第 2 题：过滤小于平均值的元素（8 分）"></a>三、编程第 2 题：过滤小于平均值的元素（8 分）</h2><h3 id="题目要求-1"><a href="#题目要求-1" class="headerlink" title="题目要求"></a>题目要求</h3><blockquote>
+<p>写函数，求数组平均值，返回所有<strong>小于平均值</strong>的元素；空数组直接返回 <code>[]</code>。</p>
+</blockquote>
+<h3 id="标准答案-1"><a href="#标准答案-1" class="headerlink" title="标准答案"></a>标准答案</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">filterLessAvg</span>(<span class="params">arr</span>) &#123;</span><br><span class="line">    <span class="keyword">if</span> (!arr.<span class="property">length</span>) <span class="keyword">return</span> [];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> sum = arr.<span class="title function_">reduce</span>(<span class="function">(<span class="params">acc, cur</span>) =&gt;</span> acc + cur, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">const</span> avg = sum / arr.<span class="property">length</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> arr.<span class="title function_">filter</span>(<span class="function"><span class="params">item</span> =&gt;</span> item &lt; avg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="得分点拆解-1"><a href="#得分点拆解-1" class="headerlink" title="得分点拆解"></a>得分点拆解</h3><table>
+<thead>
+<tr>
+<th>得分点</th>
+<th>分值</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>空数组判断</td>
+<td>2</td>
+<td><code>if (!arr.length) return [];</code></td>
+</tr>
+<tr>
+<td>求和</td>
+<td>2</td>
+<td><code>reduce</code>，初始值 <code>0</code></td>
+</tr>
+<tr>
+<td>求平均</td>
+<td>1</td>
+<td><code>sum / arr.length</code></td>
+</tr>
+<tr>
+<td>filter 过滤</td>
+<td>3</td>
+<td><code>arr.filter(item =&gt; item &lt; avg)</code></td>
+</tr>
+</tbody></table>
+<div class="pitfall"><span class="pitfall-label">常见扣分</span>
+① 忘了判空 → 空数组时 <code>0/0</code> 得 <code>NaN</code>，返回 `[]` 变成返回 `undefined`；<br>
+② <code>reduce</code> 漏了初始值 <code>0</code>；<br>
+③ 条件写成 <code>item <= avg</code>（题目是"小于"，不含等于）；<br>
+④ 用 <code>forEach</code> 却忘记 <code>return</code> 新数组（`forEach` 没有返回值）。
+</div>
+
+<hr>
+<h2 id="四、编程第-3-题：倒计时按钮（10-分）"><a href="#四、编程第-3-题：倒计时按钮（10-分）" class="headerlink" title="四、编程第 3 题：倒计时按钮（10 分）"></a>四、编程第 3 题：倒计时按钮（10 分）</h2><h3 id="题目要求-2"><a href="#题目要求-2" class="headerlink" title="题目要求"></a>题目要求</h3><blockquote>
+<p>页面有一个提交按钮，点击后按钮进入禁用状态，并显示”6 秒后提交”开始倒计时；倒计时结束按钮恢复可点击，文字变回”提交”。</p>
+</blockquote>
+<h3 id="完整代码"><a href="#完整代码" class="headerlink" title="完整代码"></a>完整代码</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">button</span> <span class="attr">id</span>=<span class="string">&quot;subBtn&quot;</span> <span class="attr">disabled</span>&gt;</span>提交<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">const</span> subBtn = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;subBtn&#x27;</span>);</span></span><br><span class="line"><span class="language-javascript">    <span class="keyword">let</span> time = <span class="number">6</span>;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    subBtn.<span class="property">disabled</span> = <span class="literal">false</span>;   <span class="comment">// 一开始先放开，等用户点击</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">    subBtn.<span class="title function_">addEventListener</span>(<span class="string">&#x27;click&#x27;</span>, <span class="keyword">function</span> (<span class="params"></span>) &#123;</span></span><br><span class="line"><span class="language-javascript">        subBtn.<span class="property">disabled</span> = <span class="literal">true</span>;    <span class="comment">// 点击后立即禁用</span></span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">        <span class="keyword">let</span> timer = <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-javascript">            time--;</span></span><br><span class="line"><span class="language-javascript">            subBtn.<span class="property">innerText</span> = time + <span class="string">&quot;秒后提交&quot;</span>;</span></span><br><span class="line"><span class="language-javascript"></span></span><br><span class="line"><span class="language-javascript">            <span class="keyword">if</span> (time &lt;= <span class="number">0</span>) &#123;</span></span><br><span class="line"><span class="language-javascript">                <span class="built_in">clearInterval</span>(timer);       <span class="comment">// 停掉循环定时器</span></span></span><br><span class="line"><span class="language-javascript">                subBtn.<span class="property">innerText</span> = <span class="string">&quot;提交&quot;</span>;   <span class="comment">// 文字复原</span></span></span><br><span class="line"><span class="language-javascript">                subBtn.<span class="property">disabled</span> = <span class="literal">false</span>;    <span class="comment">// 恢复可点击</span></span></span><br><span class="line"><span class="language-javascript">            &#125;</span></span><br><span class="line"><span class="language-javascript">        &#125;, <span class="number">1000</span>);</span></span><br><span class="line"><span class="language-javascript">    &#125;);</span></span><br><span class="line"><span class="language-javascript"></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果题目给的是<strong>页面一加载就开始倒计时</strong>（提纲模板就是这种），去掉点击事件即可：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> subBtn = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&#x27;subBtn&#x27;</span>);</span><br><span class="line"><span class="keyword">let</span> time = <span class="number">6</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> timer = <span class="built_in">setInterval</span>(<span class="function">() =&gt;</span> &#123;</span><br><span class="line">    time--;</span><br><span class="line">    subBtn.<span class="property">innerText</span> = time + <span class="string">&quot;秒后提交&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (time &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">clearInterval</span>(timer);</span><br><span class="line">        subBtn.<span class="property">innerText</span> = <span class="string">&quot;提交&quot;</span>;</span><br><span class="line">        subBtn.<span class="property">disabled</span> = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;, <span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="得分点拆解-2"><a href="#得分点拆解-2" class="headerlink" title="得分点拆解"></a>得分点拆解</h3><table>
+<thead>
+<tr>
+<th>得分点</th>
+<th>分值</th>
+<th>代码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>获取按钮</td>
+<td>1</td>
+<td><code>document.getElementById(&#39;subBtn&#39;)</code></td>
+</tr>
+<tr>
+<td>开启循环定时器</td>
+<td>2</td>
+<td><code>setInterval(回调, 1000)</code></td>
+</tr>
+<tr>
+<td>数值递减</td>
+<td>1</td>
+<td><code>time--</code></td>
+</tr>
+<tr>
+<td>改按钮文字</td>
+<td>2</td>
+<td><code>subBtn.innerText = time + &quot;秒后提交&quot;</code></td>
+</tr>
+<tr>
+<td>结束条件</td>
+<td>2</td>
+<td><code>if (time &lt;= 0)</code></td>
+</tr>
+<tr>
+<td>清除定时器</td>
+<td>1</td>
+<td><code>clearInterval(timer)</code></td>
+</tr>
+<tr>
+<td>恢复按钮</td>
+<td>1</td>
+<td><code>subBtn.disabled = false</code></td>
+</tr>
+</tbody></table>
+<div class="pitfall"><span class="pitfall-label">三个细节</span>
+① <b>清除定时器必须用 <code>clearInterval</code></b>（因为开的是 `setInterval`），写成 `clearTimeout` 是错的；<br>
+② <code>timer</code> 变量要有名字，才能传给 `clearInterval`——写成匿名的一行就无法清除；<br>
+③ 提纲模板里先 <code>time--</code> 再显示，所以第一屏显示的是"<b>5</b> 秒后提交"而不是 6。如果想从 6 开始，把递减放到 `if` 之后或者调整初始值为 7。<b>按题目给的模板写就行，别自己改结构。</b>
+</div>
+
+<div class="note info flat"><p><strong>关于 <code>disabled</code></strong>：这个模板假定了按钮初始是禁用的（HTML 里写 <code>&lt;button disabled&gt;</code>）。如果题目没要求初始禁用，那 <code>subBtn.disabled = true</code> 就该放在点击事件里，而不是页面加载时。看清题干。</p>
+</div>
+
+<hr>
+<h2 id="五、编程第-4-题：fetch-模板渲染（14-分）"><a href="#五、编程第-4-题：fetch-模板渲染（14-分）" class="headerlink" title="五、编程第 4 题：fetch + 模板渲染（14 分）"></a>五、编程第 4 题：fetch + 模板渲染（14 分）</h2><p>全卷最大单题。流程长但每一步都是固定的。</p>
+<h3 id="题目要求-3"><a href="#题目要求-3" class="headerlink" title="题目要求"></a>题目要求</h3><blockquote>
+<p>从接口获取用户列表，用 <code>&lt;script type=&quot;text/template&quot;&gt;</code> 里的模板渲染到页面容器。</p>
+</blockquote>
+<h3 id="HTML-结构"><a href="#HTML-结构" class="headerlink" title="HTML 结构"></a>HTML 结构</h3><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 模板：浏览器不执行、不显示，只当字符串用 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/template&quot;</span> <span class="attr">id</span>=<span class="string">&quot;userTpl&quot;</span>&gt;</span><span class="language-handlebars"><span class="language-xml"></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;user-card&quot;</span>&gt;</span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars">        <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;uid&quot;</span>&gt;</span></span><span class="template-variable">&#123;&#123;<span class="name">uid</span>&#125;&#125;</span><span class="language-xml"><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars">        <span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">&quot;name&quot;</span>&gt;</span></span><span class="template-variable">&#123;&#123;<span class="name">username</span>&#125;&#125;</span><span class="language-xml"><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span></span></span><br><span class="line"><span class="language-xml"><span class="language-handlebars"></span></span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 渲染目标 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;userContainer&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="完整-JS"><a href="#完整-JS" class="headerlink" title="完整 JS"></a>完整 JS</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ① 负责拿数据</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">fetchUser</span>(<span class="params">url</span>) &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">const</span> res = <span class="keyword">await</span> <span class="title function_">fetch</span>(url);</span><br><span class="line">        <span class="keyword">const</span> list = <span class="keyword">await</span> res.<span class="title function_">json</span>();</span><br><span class="line">        <span class="keyword">return</span> list;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">        <span class="variable language_">console</span>.<span class="title function_">error</span>(err);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ② 负责渲染</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">render</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> userList = <span class="keyword">await</span> <span class="title function_">fetchUser</span>(apiUrl);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> tplStr = <span class="variable language_">document</span>.<span class="title function_">getElementById</span>(<span class="string">&quot;userTpl&quot;</span>).<span class="property">innerHTML</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> html = userList.<span class="title function_">map</span>(<span class="function"><span class="params">item</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> tplStr</span><br><span class="line">            .<span class="title function_">replace</span>(<span class="string">&quot;&#123;&#123;uid&#125;&#125;&quot;</span>, item.<span class="property">id</span>)</span><br><span class="line">            .<span class="title function_">replace</span>(<span class="string">&quot;&#123;&#123;username&#125;&#125;&quot;</span>, item.<span class="property">username</span>);</span><br><span class="line">    &#125;).<span class="title function_">join</span>(<span class="string">&quot;&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="variable language_">document</span>.<span class="title function_">querySelector</span>(<span class="string">&quot;#userContainer&quot;</span>).<span class="property">innerHTML</span> = html;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="title function_">render</span>();</span><br></pre></td></tr></table></figure>
+
+<h3 id="得分点拆解-3"><a href="#得分点拆解-3" class="headerlink" title="得分点拆解"></a>得分点拆解</h3><table>
+<thead>
+<tr>
+<th>得分点</th>
+<th>分值</th>
+<th>代码</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>async</code> 异步函数</td>
+<td>2</td>
+<td><code>async function fetchUser(url)</code></td>
+</tr>
+<tr>
+<td>发起请求 + await</td>
+<td>2</td>
+<td><code>const res = await fetch(url)</code></td>
+</tr>
+<tr>
+<td>解析 JSON（第二个 await）</td>
+<td>2</td>
+<td><code>const list = await res.json()</code></td>
+</tr>
+<tr>
+<td><code>try-catch</code> 容错</td>
+<td>2</td>
+<td><code>try &#123; &#125; catch (err) &#123; &#125;</code></td>
+</tr>
+<tr>
+<td>取模板</td>
+<td>1</td>
+<td><code>document.getElementById(&quot;userTpl&quot;).innerHTML</code></td>
+</tr>
+<tr>
+<td><code>map</code> 替换占位符</td>
+<td>3</td>
+<td><code>.map(item =&gt; tplStr.replace(...))</code></td>
+</tr>
+<tr>
+<td><code>join(&quot;&quot;)</code> 拼接</td>
+<td>1</td>
+<td><code>.join(&quot;&quot;)</code></td>
+</tr>
+<tr>
+<td>渲染到容器</td>
+<td>1</td>
+<td><code>.innerHTML = html</code></td>
+</tr>
+</tbody></table>
+<div class="pitfall"><span class="pitfall-label">三大扣分点（背下来）</span>
+① <b>漏了第二个 <code>await</code></b>：写 `const list = res.json()`，拿到的是 Promise，后续 `.map` 直接报错；<br>
+② <b>没写 <code>try-catch</code></b>：网络异常时整个页面崩；<br>
+③ <b>漏了 <code>.join("")</code></b>：数组直接赋给 innerHTML 会用逗号连接，每张卡片之间多出逗号。
+</div>
+
+<div class="note success flat"><p><strong>拿分策略</strong>：这道题即使你不熟，也一定要写出 <code>async function</code>、<code>try-catch</code>、<code>return</code> 这三样骨架 —— 光是结构就有分。然后再补 <code>fetch</code> 和 <code>innerHTML</code>。<strong>空着交是 0 分，写骨架至少能拿 4~6 分。</strong></p>
+</div>
+
+<hr>
+<h2 id="六、考前默写清单"><a href="#六、考前默写清单" class="headerlink" title="六、考前默写清单"></a>六、考前默写清单</h2><p>进考场前，用这张表自测——<strong>能不能不看答案把这个空填完</strong>，就是你能不能拿这 70 分的标准。</p>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>默写内容</th>
+<th>分</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><code>grid-template-columns: ____</code>（自适应列一行）</td>
+<td>8</td>
+</tr>
+<tr>
+<td>2</td>
+<td><code>filterLessAvg</code> 四步骤</td>
+<td>8</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>setInterval</code> + <code>clearInterval</code> + <code>disabled</code> 倒计时</td>
+<td>10</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>async</code> + 两个 <code>await</code> + <code>try-catch</code> + <code>map/join/innerHTML</code></td>
+<td>14</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>minmax</code> &#x2F; <code>auto-fill</code> &#x2F; <code>1fr</code> 三个关键词拼写</td>
+<td>—</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>Array.isArray(value)</code> 与回调 <code>return value</code></td>
+<td>—</td>
+</tr>
+</tbody></table>
+<div class="mnemonic"><span class="mnemonic-label">最后一句</span>
+<b>这套卷子 70 分是"背代码"，30 分是"背概念"。</b><br>
+如果时间只够做一件事，那就把这 4 个模板手写 3 遍。**会默写，就及格。**
+</div>
+
+<hr>
+<p><strong>本系列文章</strong></p>
+<ul>
+<li><a href="/2026/10/03/final-review-00-overview/">（零）分数地图与复习路线</a></li>
+<li><a href="/2026/10/03/final-review-01-html/">（一）HTML 考点</a></li>
+<li><a href="/2026/10/03/final-review-02-css/">（二）CSS 考点全解</a></li>
+<li><a href="/2026/10/03/final-review-03-js-basic/">（三）JavaScript 考点（上）</a></li>
+<li><a href="/2026/10/03/final-review-04-js-advanced/">（四）JavaScript 考点（下）</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://f-zx.github.io">Fzx</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://f-zx.github.io/2026/10/03/final-review-05-coding-templates/">https://f-zx.github.io/2026/10/03/final-review-05-coding-templates/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://f-zx.github.io" target="_blank">Fzx's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/CSS/">CSS</a><a class="post-meta__tags" href="/tags/Grid/">Grid</a><a class="post-meta__tags" href="/tags/%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">期末复习</a><a class="post-meta__tags" href="/tags/JavaScript/">JavaScript</a><a class="post-meta__tags" href="/tags/%E7%BC%96%E7%A8%8B%E9%A2%98/">编程题</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related full-width" href="/2026/10/03/final-review-04-js-advanced/" title="Web 前端期末复习（四）：JavaScript 考点（下）"><img class="cover" src="/img/touxiang.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Web 前端期末复习（四）：JavaScript 考点（下）</div></div><div class="info-2"><div class="info-item-1"> 这 3 个考点要特别注意：它们不只是选择题，而是直接决定编程题能不能拿分。  考点 11 reduce &#x2F; filter → 编程第 2 题 考点 13 fetch + 模板渲染 → 编程第 4 题（14 分，全卷最大单题）     考点 11：数组 reduce 与 filter★ 必考编程第 2 题约 8 分  两个方法的分工   方法 作用 返回值    reduce(回调, 初始值) 把数组汇总成一个值 汇总结果（常用于求和）   filter(回调) 把符合条件的元素留下 新数组   reduce 的四个参数123arr.reduce((acc, cur, index, array) =&gt; &#123;    return acc + cur;&#125;, 0);     参数 含义    acc 累加器（上一轮的返回值）   cur 当前元素   index 当前下标（可省）   array 原数组（可省）   第二个实参 0 初始值，也就是 acc 的起点   求和的固定写法： 1const sum = arr.reduce((acc, cur)...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/10/03/final-review-02-css/" title="Web 前端期末复习（二）：CSS 考点全解"><img class="cover" src="/img/touxiang.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-03</div><div class="info-item-2">Web 前端期末复习（二）：CSS 考点全解</div></div><div class="info-2"><div class="info-item-1"> CSS 是这一科题型最全、占分最高的部分：单选、多选、填空、程序填空全都会出。好消息是它的考点高度标准化——属性就那几个、取值就那几档，背下来就能直接换成分数。 本篇覆盖提纲里的 7 个 CSS 考点，其中考点 6、7 是两道纯计算题，等于白送分。    考点 1：position 定位全套★ 必考单选 3 分多选 3 分  定位的考法只有一个核心：“这个元素相对于谁移动？它原来的位置还占不占？” 把这两个问题的答案记住，四种取值就全通了。    取值 参照物 是否脱离文档流 原来的位置    static 无（普通文档流） ❌ 不脱离 正常占位   relative 自身原来的位置 ❌ 不脱离 仍然保留   absolute 最近的已定位祖先 ✅ 脱离 被后面的元素挤占   fixed 浏览器视口 ✅ 脱离 被挤占   static：默认值不加 position 就是这个值，元素老老实实待在文档流里，top &#x2F; left 这些偏移属性完全无效。 relative：相对定位（最容易被扣分的那个）提纲特意标注了几个细节，全都是考点：  ✅ 不脱离文档流，原有位置保留 —...</div></div></div></a><a class="pagination-related" href="/2026/10/03/final-review-04-js-advanced/" title="Web 前端期末复习（四）：JavaScript 考点（下）"><img class="cover" src="/img/touxiang.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-03</div><div class="info-item-2">Web 前端期末复习（四）：JavaScript 考点（下）</div></div><div class="info-2"><div class="info-item-1"> 这 3 个考点要特别注意：它们不只是选择题，而是直接决定编程题能不能拿分。  考点 11 reduce &#x2F; filter → 编程第 2 题 考点 13 fetch + 模板渲染 → 编程第 4 题（14 分，全卷最大单题）     考点 11：数组 reduce 与 filter★ 必考编程第 2 题约 8 分  两个方法的分工   方法 作用 返回值    reduce(回调, 初始值) 把数组汇总成一个值 汇总结果（常用于求和）   filter(回调) 把符合条件的元素留下 新数组   reduce 的四个参数123arr.reduce((acc, cur, index, array) =&gt; &#123;    return acc + cur;&#125;, 0);     参数 含义    acc 累加器（上一轮的返回值）   cur 当前元素   index 当前下标（可省）   array 原数组（可省）   第二个实参 0 初始值，也就是 acc 的起点   求和的固定写法： 1const sum = arr.reduce((acc, cur)...</div></div></div></a><a class="pagination-related" href="/2026/10/03/final-review-03-js-basic/" title="Web 前端期末复习（三）：JavaScript 考点（上）"><img class="cover" src="/img/touxiang.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-03</div><div class="info-item-2">Web 前端期末复习（三）：JavaScript 考点（上）</div></div><div class="info-2"><div class="info-item-1"> JavaScript 是这套卷子的绝对重心：13 个考点、独占 40 分编程题。本篇整理前 10 个，基本都在单选、填空、多选里出；后 3 个（数组高阶方法、for…in、fetch）留给下一篇。 这里的每个考点都有一个”陷阱点”，提纲专门用 ⚠️ 标注过，我在下面都单独框出来了。    考点 1：对象解构赋值 + 默认值★ 必考单选 5 分  两个符号别搞混1const &#123; 属性名: 新变量名, 属性 = 默认值 &#125; = 对象;     符号 含义 作用    : 冒号 属性重命名 把 username 取出来存到 uname 里   = 等号 默认值 属性取不到时用这个值   口诀 「冒号改名，等号兜底。」   默认值什么时候才生效这是本考点的全部陷阱所在，提纲用了感叹号强调：  默认值生效条件：属性不存在 或者 属性值为 undefined。对象有这个属性，默认值就不生效！  真题拆解12345678const user = &#123; username: &quot;wangwu&quot;, age: 22 &#125;;const &#123;...</div></div></div></a><a class="pagination-related" href="/2026/10/03/final-review-01-html/" title="Web 前端期末复习（一）：HTML 考点"><img class="cover" src="/img/touxiang.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-03</div><div class="info-item-2">Web 前端期末复习（一）：HTML 考点</div></div><div class="info-2"><div class="info-item-1"> HTML 在这一科里分量最轻——只有 2 个考点，主要出单选和填空。但正因为量小，这几分属于”必须拿到”的送分题，考前半小时就能拿下。    考点 1：HTML 常用标签★ 必考单选填空基础送分  两个自闭合标签   标签 作用 要点    &lt;hr&gt; 水平分割线 单标签，没有 &lt;/hr&gt;   &lt;br&gt; 强制换行 单标签，没有 &lt;/br&gt;   这两个最容易考的就是”谁是分割线、谁是换行”，一字之差，别记反。 记法 hr 的 h 就是 horizontal（水平）；br 的 b 就是 break（断开）。 所以 horizonal → 横线（分割线），break → 换行。   块级元素 与 行内元素这是本节的核心考点，几乎必出多选题。直接背清单：    类型 代表标签 是否独占一行 能否设置宽高    行内（内联）元素 span、a、em、strong ❌ 不独占 ❌ 宽高无效   块级元素 div、h1~h6、p、ul ✅ 独占一行 ✅ 可以设置   记忆时抓住两条本质区别：“独占一行” 和 “宽高有效”。题目问”以下哪个是块级元...</div></div></div></a><a class="pagination-related" href="/2026/10/03/web-frontend-03-css-layout/" title="Web 前端学习笔记（三）：CSS 布局（浮动 · 定位 · Flex）"><img class="cover" src="/img/touxiang.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-03</div><div class="info-item-2">Web 前端学习笔记（三）：CSS 布局（浮动 · 定位 · Flex）</div></div><div class="info-2"><div class="info-item-1"> 浮动、定位、Flex 解决的是同一类问题——把元素摆到想要的位置，只是属于不同年代的方案。放在一起对比，比分开学更容易记住各自适合什么场景。    一、浮动 floatdemo 9：CSS 浮动 float 最初的用途是实现”文字环绕图片”的效果（就像杂志排版），后来被大量拿来搭多列布局。它的取值很简单： 123456789101112.left-son &#123;    width: 100px;    height: 100px;    background-color: yellow;    float: left;        /* 向左浮动 */&#125;.right-son &#123;    width: 100px;    height: 100px;    background-color: orange;    float: right;       /* 向右浮动 */&#125;  浮动的元素会尽量靠向指定方向，多个同向浮动元素会依次紧贴排列，一行放不下就换行。 半脱离文档流浮动元素会”浮”起来：它原来占据的位置会让给后面的元素，但行内内容（文字）...</div></div></div></a><a class="pagination-related" href="/2026/10/03/web-frontend-02-css-basics/" title="Web 前端学习笔记（二）：CSS 基础"><img class="cover" src="/img/touxiang.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-03</div><div class="info-item-2">Web 前端学习笔记（二）：CSS 基础</div></div><div class="info-2"><div class="info-item-1"> 上一篇整理了 HTML 的结构，这一篇进入 CSS ——负责”长什么样”的部分。同样，每节都附了可以直接打开的 demo。    一、三种导入方式demo 5：CSS 导入方式 CSS 有三种写进页面的方式： 1. 外部样式 —— 单独写成 .css 文件，用 &lt;link&gt; 引入。实际项目里基本都用这种，因为可以被多个页面复用，也能被浏览器缓存。 1&lt;link rel=&quot;stylesheet&quot; href=&quot;css/style.css&quot;&gt;  1234/* css/style.css */h3 &#123;    color: yellow;&#125;  2. 内部样式 —— 写在 &lt;head&gt; 里的 &lt;style&gt; 标签中，只对当前页面生效。 123456789&lt;style&gt;    p &#123;        color: blue;        font-size: 25px;    &#125;    h2 &#123;        color: pink;    &...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Fzx</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">12</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">19</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/f-zx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/f-zx" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:1280265757@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%A8%8B%E5%BA%8F%E5%A1%AB%E7%A9%BA%EF%BC%8830-%E5%88%86%EF%BC%89%E7%9A%84%E4%B8%89%E7%B1%BB%E5%A5%97%E8%B7%AF"><span class="toc-number">1.</span> <span class="toc-text">一、程序填空（30 分）的三类套路</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%9A%E7%94%A8%E5%A5%97%E8%B7%AF%EF%BC%9A%E5%85%88%E8%AF%BB%E6%B3%A8%E9%87%8A%EF%BC%8C%E5%86%8D%E6%89%BE%E5%AF%B9%E7%A7%B0"><span class="toc-number">1.1.</span> <span class="toc-text">通用套路：先读注释，再找对称</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B1%BB%E5%9E%8B%E4%B8%80%EF%BC%9ACSS-%E8%A1%A5%E5%85%A8"><span class="toc-number">1.2.</span> <span class="toc-text">类型一：CSS 补全</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B1%BB%E5%9E%8B%E4%BA%8C%EF%BC%9AFlex-%E5%AA%92%E4%BD%93%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.3.</span> <span class="toc-text">类型二：Flex + 媒体查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B1%BB%E5%9E%8B%E4%B8%89%EF%BC%9AJSON-parse-%E5%9B%9E%E8%B0%83"><span class="toc-number">1.4.</span> <span class="toc-text">类型三：JSON.parse 回调</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%BC%96%E7%A8%8B%E7%AC%AC-1-%E9%A2%98%EF%BC%9AGrid-%E5%A4%9A%E5%88%97%E5%B8%83%E5%B1%80%EF%BC%888-%E5%88%86%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">二、编程第 1 题：Grid 多列布局（8 分）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E8%A6%81%E6%B1%82"><span class="toc-number">2.1.</span> <span class="toc-text">题目要求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%87%E5%87%86%E7%AD%94%E6%A1%88"><span class="toc-number">2.2.</span> <span class="toc-text">标准答案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%97%E5%88%86%E7%82%B9%E6%8B%86%E8%A7%A3"><span class="toc-number">2.3.</span> <span class="toc-text">得分点拆解</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E7%BC%96%E7%A8%8B%E7%AC%AC-2-%E9%A2%98%EF%BC%9A%E8%BF%87%E6%BB%A4%E5%B0%8F%E4%BA%8E%E5%B9%B3%E5%9D%87%E5%80%BC%E7%9A%84%E5%85%83%E7%B4%A0%EF%BC%888-%E5%88%86%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">三、编程第 2 题：过滤小于平均值的元素（8 分）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E8%A6%81%E6%B1%82-1"><span class="toc-number">3.1.</span> <span class="toc-text">题目要求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%87%E5%87%86%E7%AD%94%E6%A1%88-1"><span class="toc-number">3.2.</span> <span class="toc-text">标准答案</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%97%E5%88%86%E7%82%B9%E6%8B%86%E8%A7%A3-1"><span class="toc-number">3.3.</span> <span class="toc-text">得分点拆解</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E7%BC%96%E7%A8%8B%E7%AC%AC-3-%E9%A2%98%EF%BC%9A%E5%80%92%E8%AE%A1%E6%97%B6%E6%8C%89%E9%92%AE%EF%BC%8810-%E5%88%86%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">四、编程第 3 题：倒计时按钮（10 分）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E8%A6%81%E6%B1%82-2"><span class="toc-number">4.1.</span> <span class="toc-text">题目要求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E4%BB%A3%E7%A0%81"><span class="toc-number">4.2.</span> <span class="toc-text">完整代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%97%E5%88%86%E7%82%B9%E6%8B%86%E8%A7%A3-2"><span class="toc-number">4.3.</span> <span class="toc-text">得分点拆解</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E7%BC%96%E7%A8%8B%E7%AC%AC-4-%E9%A2%98%EF%BC%9Afetch-%E6%A8%A1%E6%9D%BF%E6%B8%B2%E6%9F%93%EF%BC%8814-%E5%88%86%EF%BC%89"><span class="toc-number">5.</span> <span class="toc-text">五、编程第 4 题：fetch + 模板渲染（14 分）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E8%A6%81%E6%B1%82-3"><span class="toc-number">5.1.</span> <span class="toc-text">题目要求</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#HTML-%E7%BB%93%E6%9E%84"><span class="toc-number">5.2.</span> <span class="toc-text">HTML 结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4-JS"><span class="toc-number">5.3.</span> <span class="toc-text">完整 JS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%97%E5%88%86%E7%82%B9%E6%8B%86%E8%A7%A3-3"><span class="toc-number">5.4.</span> <span class="toc-text">得分点拆解</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E8%80%83%E5%89%8D%E9%BB%98%E5%86%99%E6%B8%85%E5%8D%95"><span class="toc-number">6.</span> <span class="toc-text">六、考前默写清单</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/10/03/final-review-05-coding-templates/" title="Web 前端期末复习（五）：四大编程题模板 + 程序填空套路"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web 前端期末复习（五）：四大编程题模板 + 程序填空套路"/></a><div class="content"><a class="title" href="/2026/10/03/final-review-05-coding-templates/" title="Web 前端期末复习（五）：四大编程题模板 + 程序填空套路">Web 前端期末复习（五）：四大编程题模板 + 程序填空套路</a><time datetime="2026-10-03T15:58:00.000Z" title="发表于 2026-10-03 23:58:00">2026-10-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/03/final-review-04-js-advanced/" title="Web 前端期末复习（四）：JavaScript 考点（下）"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web 前端期末复习（四）：JavaScript 考点（下）"/></a><div class="content"><a class="title" href="/2026/10/03/final-review-04-js-advanced/" title="Web 前端期末复习（四）：JavaScript 考点（下）">Web 前端期末复习（四）：JavaScript 考点（下）</a><time datetime="2026-10-03T15:56:00.000Z" title="发表于 2026-10-03 23:56:00">2026-10-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/03/final-review-03-js-basic/" title="Web 前端期末复习（三）：JavaScript 考点（上）"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web 前端期末复习（三）：JavaScript 考点（上）"/></a><div class="content"><a class="title" href="/2026/10/03/final-review-03-js-basic/" title="Web 前端期末复习（三）：JavaScript 考点（上）">Web 前端期末复习（三）：JavaScript 考点（上）</a><time datetime="2026-10-03T15:54:00.000Z" title="发表于 2026-10-03 23:54:00">2026-10-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/03/final-review-02-css/" title="Web 前端期末复习（二）：CSS 考点全解"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web 前端期末复习（二）：CSS 考点全解"/></a><div class="content"><a class="title" href="/2026/10/03/final-review-02-css/" title="Web 前端期末复习（二）：CSS 考点全解">Web 前端期末复习（二）：CSS 考点全解</a><time datetime="2026-10-03T15:52:00.000Z" title="发表于 2026-10-03 23:52:00">2026-10-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/03/final-review-01-html/" title="Web 前端期末复习（一）：HTML 考点"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web 前端期末复习（一）：HTML 考点"/></a><div class="content"><a class="title" href="/2026/10/03/final-review-01-html/" title="Web 前端期末复习（一）：HTML 考点">Web 前端期末复习（一）：HTML 考点</a><time datetime="2026-10-03T15:50:00.000Z" title="发表于 2026-10-03 23:50:00">2026-10-03</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Fzx</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.6.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.6.0"></script><script src="/js/main.js?v=5.6.0"></script><div class="js-pjax"></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-show-text.min.js" data-mobile="true" data-text="THIS,IS,MY,BLOG" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

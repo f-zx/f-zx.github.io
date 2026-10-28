@@ -1,0 +1,767 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Web 前端期末复习（二）：CSS 考点全解 | Fzx's blog</title><meta name="author" content="Fzx"><meta name="copyright" content="Fzx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="CSS 的 7 个必考考点：position 四种定位的参照物、选择器优先级与伪类伪元素、Flex 主轴交叉轴、Grid 一行搞定自适应列、媒体查询与移动优先，外加 margin auto 和 rem 两道必考计算题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Web 前端期末复习（二）：CSS 考点全解">
+<meta property="og:url" content="https://f-zx.github.io/2026/10/03/final-review-02-css/index.html">
+<meta property="og:site_name" content="Fzx&#39;s blog">
+<meta property="og:description" content="CSS 的 7 个必考考点：position 四种定位的参照物、选择器优先级与伪类伪元素、Flex 主轴交叉轴、Grid 一行搞定自适应列、媒体查询与移动优先，外加 margin auto 和 rem 两道必考计算题。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://f-zx.github.io/img/touxiang.jpg">
+<meta property="article:published_time" content="2026-10-03T15:52:00.000Z">
+<meta property="article:modified_time" content="2026-10-28T14:28:57.494Z">
+<meta property="article:author" content="Fzx">
+<meta property="article:tag" content="CSS">
+<meta property="article:tag" content="Flex">
+<meta property="article:tag" content="Grid">
+<meta property="article:tag" content="期末复习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://f-zx.github.io/img/touxiang.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Web 前端期末复习（二）：CSS 考点全解",
+  "url": "https://f-zx.github.io/2026/10/03/final-review-02-css/",
+  "image": "https://f-zx.github.io/img/touxiang.jpg",
+  "datePublished": "2026-10-03T15:52:00.000Z",
+  "dateModified": "2026-10-28T14:28:57.494Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Fzx",
+      "url": "https://f-zx.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.ico"><link rel="canonical" href="https://f-zx.github.io/2026/10/03/final-review-02-css/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.6.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Web 前端期末复习（二）：CSS 考点全解',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 8.1.2"></head><body><div class="bg-animation" id="web_bg" style="background: linear-gradient(20deg,#0062be,#925696,#cc426e,#fb0347);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">12</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">19</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/review/"><i class="fa-fw fas fa-graduation-cap"></i><span> 期末复习</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background: linear-gradient(135deg,#00b4d8 0%,#48cae4 35%,#00f5d4 65%,#72efdd 100%);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">Fzx's blog</span></a><a class="nav-page-title" href="/"><span class="site-name">Web 前端期末复习（二）：CSS 考点全解</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/review/"><i class="fa-fw fas fa-graduation-cap"></i><span> 期末复习</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> 列表</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Web 前端期末复习（二）：CSS 考点全解</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-10-03T15:52:00.000Z" title="发表于 2026-10-03 23:52:00">2026-10-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-10-28T14:28:57.494Z" title="更新于 2026-10-28 22:28:57">2026-10-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">期末复习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><blockquote>
+<p>CSS 是这一科<strong>题型最全、占分最高</strong>的部分：单选、多选、填空、程序填空全都会出。好消息是它的考点高度标准化——属性就那几个、取值就那几档，<strong>背下来就能直接换成分数</strong>。</p>
+<p>本篇覆盖提纲里的 7 个 CSS 考点，其中考点 6、7 是两道纯计算题，等于白送分。</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="考点-1：position-定位全套"><a href="#考点-1：position-定位全套" class="headerlink" title="考点 1：position 定位全套"></a>考点 1：position 定位全套</h2><div class="exam-badges"><span class="exam-badge must">★ 必考</span><span class="exam-badge score">单选 3 分</span><span class="exam-badge score">多选 3 分</span></div>
+
+<p>定位的考法只有一个核心：<strong>“这个元素相对于谁移动？它原来的位置还占不占？”</strong> 把这两个问题的答案记住，四种取值就全通了。</p>
+<table>
+<thead>
+<tr>
+<th>取值</th>
+<th>参照物</th>
+<th>是否脱离文档流</th>
+<th>原来的位置</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>static</code></td>
+<td>无（普通文档流）</td>
+<td>❌ 不脱离</td>
+<td>正常占位</td>
+</tr>
+<tr>
+<td><code>relative</code></td>
+<td><strong>自身原来的位置</strong></td>
+<td>❌ <strong>不脱离</strong></td>
+<td><strong>仍然保留</strong></td>
+</tr>
+<tr>
+<td><code>absolute</code></td>
+<td><strong>最近的已定位祖先</strong></td>
+<td>✅ 脱离</td>
+<td>被后面的元素挤占</td>
+</tr>
+<tr>
+<td><code>fixed</code></td>
+<td><strong>浏览器视口</strong></td>
+<td>✅ 脱离</td>
+<td>被挤占</td>
+</tr>
+</tbody></table>
+<h3 id="static：默认值"><a href="#static：默认值" class="headerlink" title="static：默认值"></a>static：默认值</h3><p>不加 <code>position</code> 就是这个值，元素老老实实待在文档流里，<code>top</code> &#x2F; <code>left</code> 这些偏移属性<strong>完全无效</strong>。</p>
+<h3 id="relative：相对定位（最容易被扣分的那个）"><a href="#relative：相对定位（最容易被扣分的那个）" class="headerlink" title="relative：相对定位（最容易被扣分的那个）"></a>relative：相对定位（最容易被扣分的那个）</h3><p>提纲特意标注了几个细节，全都是考点：</p>
+<ul>
+<li>✅ <strong>不脱离文档流，原有位置保留</strong> —— 它挪走之后，原来的坑还在，后面的元素不会补上来；</li>
+<li><strong>参照物是自身原来的位置</strong>；</li>
+<li><strong>不改变元素的 display 属性</strong> —— 行内元素设了 <code>relative</code> 还是行内元素。</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">    <span class="attribute">position</span>: relative;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">120px</span>;   <span class="comment">/* 相对自己原来的位置，向右挪 120px */</span></span><br><span class="line">    <span class="attribute">top</span>: <span class="number">40px</span>;     <span class="comment">/* 向下挪 40px */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<div class="pitfall"><span class="pitfall-label">高频易错</span>
+很多人以为 <code>relative</code> 会"脱离文档流"。<b>不会。</b>它会留下一个等大的空位，看起来像"飘出去了一点点"。<br>
+真正脱离文档流的是 <code>absolute</code> 和 <code>fixed</code>。
+</div>
+
+<h3 id="absolute：绝对定位"><a href="#absolute：绝对定位" class="headerlink" title="absolute：绝对定位"></a>absolute：绝对定位</h3><ul>
+<li><strong>参照物</strong>：最近的、<code>position</code> 不是 <code>static</code> 的祖先元素（也就是”最近的<strong>已定位</strong>祖先”）。</li>
+<li><strong>脱离文档流</strong>：原位置立刻被后面的元素挤占。</li>
+</ul>
+<p>如果一路往上找都没有已定位的祖先，它就相对<strong>初始包含块</strong>（可以粗略理解为页面左上角）定位。</p>
+<p>这正是”<strong>父相子绝</strong>“这个经典搭配的来源：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.father</span> &#123;</span><br><span class="line">    <span class="attribute">position</span>: relative;   <span class="comment">/* 父元素只负责当参照物，自己不移动 */</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.son</span> &#123;</span><br><span class="line">    <span class="attribute">position</span>: absolute;   <span class="comment">/* 子元素相对父元素定位 */</span></span><br><span class="line">    <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">right</span>: <span class="number">0</span>;             <span class="comment">/* 贴在父元素右上角 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="fixed：固定定位"><a href="#fixed：固定定位" class="headerlink" title="fixed：固定定位"></a>fixed：固定定位</h3><p>参照物是<strong>浏览器视口</strong>，所以页面滚动时它<strong>位置不动</strong>。典型用途：回到顶部按钮、悬浮客服、固定导航栏。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.back-to-top</span> &#123;</span><br><span class="line">    <span class="attribute">position</span>: fixed;</span><br><span class="line">    <span class="attribute">right</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">300px</span>;    <span class="comment">/* 无论怎么滚，它都在离视口顶部 300px 的位置 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<div class="mnemonic"><span class="mnemonic-label">口诀</span>
+<b>「relative 相对自己，位置还留着；absolute 找爹，走了就不回来；fixed 盯着屏幕，怎么滚都不动。」</b>
+</div>
+
+<h3 id="多选常考：哪些会脱离文档流"><a href="#多选常考：哪些会脱离文档流" class="headerlink" title="多选常考：哪些会脱离文档流"></a>多选常考：哪些会脱离文档流</h3><table>
+<thead>
+<tr>
+<th>会脱离</th>
+<th>不会脱离</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>absolute</code>、<code>fixed</code>、<code>float</code></td>
+<td><code>relative</code>、<code>static</code></td>
+</tr>
+</tbody></table>
+<p>多选就按这个表划勾，别把 <code>relative</code> 混进去。</p>
+<hr>
+<h2 id="考点-2：选择器、优先级、伪类、伪元素"><a href="#考点-2：选择器、优先级、伪类、伪元素" class="headerlink" title="考点 2：选择器、优先级、伪类、伪元素"></a>考点 2：选择器、优先级、伪类、伪元素</h2><div class="exam-badges"><span class="exam-badge must">★ 必考</span><span class="exam-badge score">多选 2 分</span><span class="exam-badge score">程序填空 1 空</span><span class="exam-badge score">填空 6 空</span></div>
+
+<p>这一节是 CSS 里考得最碎的部分，但每一条都很短，属于”背了就有”。</p>
+<h3 id="伪类与伪元素：看冒号个数"><a href="#伪类与伪元素：看冒号个数" class="headerlink" title="伪类与伪元素：看冒号个数"></a>伪类与伪元素：看冒号个数</h3><p>这是最基础的辨析点，<strong>一个冒号是伪类，两个冒号是伪元素</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>写法</th>
+<th>代表</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>伪类</strong></td>
+<td>单冒号 <code>:</code></td>
+<td><code>:focus</code></td>
+<td>获得焦点</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td><code>:hover</code></td>
+<td>鼠标悬浮</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td><code>:checked</code></td>
+<td>被选中（radio &#x2F; checkbox）</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td><code>:nth-child</code></td>
+<td>第 n 个子元素</td>
+</tr>
+<tr>
+<td><strong>伪元素</strong></td>
+<td>双冒号 <code>::</code></td>
+<td><code>::before</code></td>
+<td>元素内部最前面插入内容</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td><code>::after</code></td>
+<td>元素内部最后面插入内容</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td><code>::first-letter</code></td>
+<td>首字母</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td><code>::placeholder</code></td>
+<td>输入框占位文字的样式</td>
+</tr>
+</tbody></table>
+<div class="mnemonic"><span class="mnemonic-label">口诀</span>
+<b>「冒号一个是个状态（伪类），冒号两个是块内容（伪元素）。」</b><br>
+伪类回答"它在什么状态下"，伪元素回答"凭空多出来的那块东西"。
+</div>
+
+<h3 id="子代选择器"><a href="#子代选择器" class="headerlink" title="子代选择器 &gt;"></a>子代选择器 <code>&gt;</code></h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 只选 div 的直接子元素 p，孙子辈的 p 不管 */</span></span><br><span class="line"><span class="selector-tag">div</span> &gt; <span class="selector-tag">p</span> &#123; <span class="attribute">color</span>: red; &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 空格是所有后代，包括孙子辈 */</span></span><br><span class="line"><span class="selector-tag">div</span> <span class="selector-tag">p</span> &#123; <span class="attribute">color</span>: blue; &#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>&gt;</code> 和空格的区别<strong>必考</strong>：<code>&gt;</code> 只管一层，空格管所有层。</p>
+<h3 id="选择器优先级"><a href="#选择器优先级" class="headerlink" title="选择器优先级"></a>选择器优先级</h3><p>提纲给的顺序是 <strong>id &gt; class &gt; 标签选择器</strong>。完整的链条（从高到低）是：</p>
+<table>
+<thead>
+<tr>
+<th>优先级</th>
+<th>写法</th>
+<th>权重</th>
+<th>举例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>最高</td>
+<td><code>!important</code></td>
+<td>—</td>
+<td><code>color: red !important;</code></td>
+</tr>
+<tr>
+<td>1</td>
+<td>内联样式 <code>style=&quot;&quot;</code></td>
+<td>1000</td>
+<td><code>&lt;div style=&quot;color:red&quot;&gt;</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>id 选择器</strong></td>
+<td>100</td>
+<td><code>#box</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>class 选择器</strong>（含伪类、属性选择器）</td>
+<td>10</td>
+<td><code>.demo</code>、<code>[type=&quot;text&quot;]</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>标签选择器</strong>（含伪元素）</td>
+<td>1</td>
+<td><code>div</code>、<code>p</code>、<code>::before</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>通配符</td>
+<td>0</td>
+<td><code>*</code></td>
+</tr>
+</tbody></table>
+<div class="note info flat"><p><strong>怎么看谁赢</strong>：分别数一数”id 有几个、class 有几个、标签有几个”，从左往右比，<strong>前面一项分出大小就直接结束</strong>，不用管后面。比如 <code>.a .b</code>（0 个 id、2 个 class）胜过 <code>div p</code>（0 个 id、0 个 class、2 个标签），因为 class 那一项 2 &gt; 0。</p>
+</div>
+
+<h3 id="真题例题"><a href="#真题例题" class="headerlink" title="真题例题"></a>真题例题</h3><p>提纲里的原题，非常典型：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#box</span>  &#123; <span class="attribute">color</span>: orange; &#125;</span><br><span class="line"><span class="selector-class">.demo</span> &#123; <span class="attribute">color</span>: pink; &#125;</span><br><span class="line"><span class="selector-tag">div</span>   &#123; <span class="attribute">color</span>: purple; &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">&quot;box&quot;</span> <span class="attr">class</span>=<span class="string">&quot;demo&quot;</span>&gt;</span>这段文字是什么颜色？<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<div class="pitfall"><span class="pitfall-label">答案</span>
+<b>orange（橙色）</b>。<br>
+三条规则都命中了这个 div：`#box` 是 id（100）、`.demo` 是 class（10）、`div` 是标签（1）。<br>
+<b>id 优先级最高，所以是 orange。</b>注意这里和三条规则书写的先后顺序无关——优先级高的赢，不看谁写在后面。
+</div>
+
+<p>这个结论要记牢：<strong>优先级不同 → 高者胜，与顺序无关；优先级相同 → 后写的胜。</strong> 两层规则，别混。</p>
+<h3 id="两个清除默认样式"><a href="#两个清除默认样式" class="headerlink" title="两个清除默认样式"></a>两个清除默认样式</h3><p>考填空时几乎原样出现：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 清除列表的小圆点 / 序号 */</span></span><br><span class="line"><span class="selector-tag">ul</span> &#123;</span><br><span class="line">    <span class="attribute">list-style</span>: none;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 去掉 a 标签的下划线 */</span></span><br><span class="line"><span class="selector-tag">a</span> &#123;</span><br><span class="line">    <span class="attribute">text-decoration</span>: none;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<div class="mnemonic"><span class="mnemonic-label">口诀</span>
+<b>列表样式 list-style，文字装饰 text-decoration。</b><br>
+两句话都是"<b>属性: none</b>"，记住属性名就够了。
+</div>
+
+<hr>
+<h2 id="考点-3：Flex-弹性布局"><a href="#考点-3：Flex-弹性布局" class="headerlink" title="考点 3：Flex 弹性布局"></a>考点 3：Flex 弹性布局</h2><div class="exam-badges"><span class="exam-badge must">★ 必考</span><span class="exam-badge score">填空 3 空</span><span class="exam-badge score">程序填空 2 空</span><span class="exam-badge score">多选 4 分</span></div>
+
+<p>Flex 的所有属性都围绕<strong>两条轴</strong>，理解了轴，剩下的就是背取值。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">display: flex;  且  flex-direction: row（默认）时</span><br><span class="line"></span><br><span class="line">          主轴（水平）→</span><br><span class="line">  ┌────────────────────────────┐</span><br><span class="line">  │                            │  ↑</span><br><span class="line">  │        [1] [2] [3]         │  交叉轴（垂直）</span><br><span class="line">  │                            │  ↓</span><br><span class="line">  └────────────────────────────┘</span><br><span class="line"></span><br><span class="line">  justify-content  → 管主轴</span><br><span class="line">  align-items      → 管交叉轴</span><br></pre></td></tr></table></figure>
+
+<h3 id="六个必背属性"><a href="#六个必背属性" class="headerlink" title="六个必背属性"></a>六个必背属性</h3><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>作用</th>
+<th>常用取值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>display: flex</code></td>
+<td><strong>开启弹性容器</strong></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>flex-direction</code></td>
+<td>设置<strong>主轴方向</strong></td>
+<td><code>row</code>（水平，默认）、<code>column</code>（垂直）</td>
+</tr>
+<tr>
+<td><code>flex-wrap</code></td>
+<td>是否换行</td>
+<td><code>nowrap</code>（默认不换行）、<code>wrap</code>（允许换行）</td>
+</tr>
+<tr>
+<td><code>justify-content</code></td>
+<td><strong>主轴</strong>对齐</td>
+<td><code>flex-start</code>、<code>center</code>、<code>space-around</code>、<code>space-evenly</code></td>
+</tr>
+<tr>
+<td><code>align-items</code></td>
+<td><strong>交叉轴</strong>对齐</td>
+<td><code>flex-start</code>、<code>center</code>、<code>flex-end</code></td>
+</tr>
+<tr>
+<td><code>flex-grow</code></td>
+<td>子元素如何分配剩余空间</td>
+<td><code>1</code> 表示自动占满剩余空间</td>
+</tr>
+</tbody></table>
+<h3 id="justify-content-的三种-space-值"><a href="#justify-content-的三种-space-值" class="headerlink" title="justify-content 的三种 space 值"></a>justify-content 的三种 space 值</h3><p>这三个最容易混，图示记更清楚（假设有 3 个方块）：</p>
+<table>
+<thead>
+<tr>
+<th>取值</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>flex-start</code></td>
+<td><code>[1][2][3]</code>　　　　　　　　全部靠左</td>
+</tr>
+<tr>
+<td><code>space-between</code></td>
+<td><code>[1]　　　[2]　　　[3]</code>　两端顶格，中间平分</td>
+</tr>
+<tr>
+<td><code>space-around</code></td>
+<td><code>　[1]　　[2]　　[3]　</code>　每个元素左右间距相等（两端是半个间距）</td>
+</tr>
+<tr>
+<td><code>space-evenly</code></td>
+<td><code>　　[1]　　[2]　　[3]　　</code>　所有间距（含两端）完全相等</td>
+</tr>
+</tbody></table>
+<div class="mnemonic"><span class="mnemonic-label">口诀</span>
+<b>between 是"之间"——只管元素之间，两端顶格；around 是"周围"——每个元素四周都有间距；evenly 是"均匀"——连两端也算进去平均分。</b>
+</div>
+
+<h3 id="flex-grow-1-是什么效果"><a href="#flex-grow-1-是什么效果" class="headerlink" title="flex-grow: 1 是什么效果"></a>flex-grow: 1 是什么效果</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.container</span> &#123; <span class="attribute">display</span>: flex; &#125;</span><br><span class="line"><span class="selector-class">.item</span> &#123; <span class="attribute">flex-grow</span>: <span class="number">1</span>; &#125;   <span class="comment">/* 三个 item 平分容器的剩余宽度 */</span></span><br></pre></td></tr></table></figure>
+
+<p><code>flex-grow</code> 定义的是”剩余空间怎么分”。设成 <code>1</code> 表示所有设了 <code>1</code> 的子元素<strong>等比例吃掉剩余空间</strong>，所以三个 <code>flex-grow: 1</code> 的子元素会变成三等分。</p>
+<div class="pitfall"><span class="pitfall-label">易错点</span>
+<b>不要死记"justify-content 是水平、align-items 是垂直"。</b>这两个管的是<b>主轴</b>和<b>交叉轴</b>——一旦 `flex-direction: column`，主轴变垂直，两者的作用方向就互换了。
+</div>
+
+<hr>
+<h2 id="考点-4：Grid-网格布局"><a href="#考点-4：Grid-网格布局" class="headerlink" title="考点 4：Grid 网格布局"></a>考点 4：Grid 网格布局</h2><div class="exam-badges"><span class="exam-badge must">★ 必考</span><span class="exam-badge score">编程第 1 题</span><span class="exam-badge score">约 8 分</span></div>
+
+<p>这个考点<strong>只有一句话要背</strong>，但它出现在编程题里，属于”背了就直接拿 8 分”。</p>
+<h3 id="题目要求长什么样"><a href="#题目要求长什么样" class="headerlink" title="题目要求长什么样"></a>题目要求长什么样</h3><blockquote>
+<p>请用 Grid 布局实现：容器内尽可能多地排列卡片，<strong>每列最小宽度 250px</strong>，多余空间平均分给各列。</p>
+</blockquote>
+<h3 id="标准答案"><a href="#标准答案" class="headerlink" title="标准答案"></a>标准答案</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.grid-box</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: grid;</span><br><span class="line">    <span class="attribute">grid-template-columns</span>: <span class="built_in">repeat</span>(auto-fill, <span class="built_in">minmax</span>(<span class="number">250px</span>, <span class="number">1</span>fr));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>逐段拆开看，每一段都有明确含义：</p>
+<table>
+<thead>
+<tr>
+<th>片段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>display: grid</code></td>
+<td>开启网格布局</td>
+</tr>
+<tr>
+<td><code>repeat(...)</code></td>
+<td>重复生成多列</td>
+</tr>
+<tr>
+<td><code>auto-fill</code></td>
+<td><strong>自动填充</strong>：一行能塞几列就塞几列</td>
+</tr>
+<tr>
+<td><code>minmax(250px, 1fr)</code></td>
+<td>每列<strong>最小 250px</strong>，最大为 <code>1fr</code>（均分剩余空间）</td>
+</tr>
+</tbody></table>
+<div class="mnemonic"><span class="mnemonic-label">必背一行</span>
+<b><code>grid-template-columns: repeat(auto-fill, minmax(最小宽度, 1fr));</code></b><br>
+把"最小宽度"换成题目给的数字就行，其余一个字符都不要改。
+</div>
+
+<div class="note info flat"><p><strong>auto-fill 和 auto-fit 的区别</strong>（了解即可）：<code>auto-fill</code> 会保留空的列轨道，<code>auto-fit</code> 会把空的列合并掉、让内容拉伸铺满。题目如果写了 <code>auto-fill</code> 就照写，别自作主张换掉。</p>
+</div>
+
+<hr>
+<h2 id="考点-5：媒体查询-与-移动优先"><a href="#考点-5：媒体查询-与-移动优先" class="headerlink" title="考点 5：媒体查询 与 移动优先"></a>考点 5：媒体查询 与 移动优先</h2><div class="exam-badges"><span class="exam-badge must">★ 必考</span><span class="exam-badge score">单选 4 分</span></div>
+
+<h3 id="max-width-和-min-width-的方向"><a href="#max-width-和-min-width-的方向" class="headerlink" title="max-width 和 min-width 的方向"></a>max-width 和 min-width 的方向</h3><p>这是本节<strong>唯一的失分点</strong>，记住”等号在哪边”：</p>
+<table>
+<thead>
+<tr>
+<th>写法</th>
+<th>生效条件</th>
+<th>通俗理解</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>max-width: 768px</code></td>
+<td>视口宽度 <strong>≤ 768px</strong></td>
+<td>“<strong>小于等于</strong>这个宽度才生效” → 适配小屏</td>
+</tr>
+<tr>
+<td><code>min-width: 768px</code></td>
+<td>视口宽度 <strong>≥ 768px</strong></td>
+<td>“<strong>大于等于</strong>这个宽度才生效” → 适配大屏</td>
+</tr>
+</tbody></table>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 小屏（手机）：宽度不超过 768px 时生效 */</span></span><br><span class="line"><span class="keyword">@media</span> screen <span class="keyword">and</span> (<span class="attribute">max-width</span>: <span class="number">768px</span>) &#123;</span><br><span class="line">    <span class="selector-class">.box</span> &#123; <span class="attribute">width</span>: <span class="number">100%</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 大屏（平板及以上）：宽度达到 768px 时生效 */</span></span><br><span class="line"><span class="keyword">@media</span> screen <span class="keyword">and</span> (<span class="attribute">min-width</span>: <span class="number">768px</span>) &#123;</span><br><span class="line">    <span class="selector-class">.box</span> &#123; <span class="attribute">width</span>: <span class="number">50%</span>; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<div class="mnemonic"><span class="mnemonic-label">口诀</span>
+<b>max 是"封顶"——屏幕不能比它更大；min 是"起步"——屏幕不能比它更小。</b>
+</div>
+
+<h3 id="移动优先"><a href="#移动优先" class="headerlink" title="移动优先"></a>移动优先</h3><p>提纲明确写了这个概念，简答题&#x2F;单选都可能出：</p>
+<blockquote>
+<p><strong>移动优先：先写移动端（小屏）样式，再用 <code>min-width</code> 逐步向大屏适配。</strong></p>
+</blockquote>
+<p>为什么这样写？因为手机屏幕小、性能弱，优先保证小屏的基础体验，再用 <code>min-width</code> 一层层”加料”。反过来（先写大屏、用 <code>max-width</code> 往小屏减）叫”优雅降级”，也可以，但<strong>提纲要求的是移动优先</strong>，答题时写 <code>min-width</code>。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 1. 先写手机端基础样式（不用媒体查询） */</span></span><br><span class="line"><span class="selector-class">.box</span> &#123; <span class="attribute">width</span>: <span class="number">100%</span>; &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 2. 平板及以上：加宽 */</span></span><br><span class="line"><span class="keyword">@media</span> screen <span class="keyword">and</span> (<span class="attribute">min-width</span>: <span class="number">768px</span>) &#123;</span><br><span class="line">    <span class="selector-class">.box</span> &#123; <span class="attribute">width</span>: <span class="number">50%</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* 3. 桌面及以上：再宽 */</span></span><br><span class="line"><span class="keyword">@media</span> screen <span class="keyword">and</span> (<span class="attribute">min-width</span>: <span class="number">1200px</span>) &#123;</span><br><span class="line">    <span class="selector-class">.box</span> &#123; <span class="attribute">width</span>: <span class="number">33.33%</span>; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="容器居中"><a href="#容器居中" class="headerlink" title="容器居中"></a>容器居中</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.container</span> &#123;</span><br><span class="line">    <span class="attribute">max-width</span>: <span class="number">1200px</span>;   <span class="comment">/* 限制最大宽度 */</span></span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">0</span> auto;      <span class="comment">/* 左右 auto，自动均分 → 水平居中 */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这两个属性是固定搭配：<code>max-width</code> 负责”别太宽”，<code>margin: 0 auto</code> 负责”居中”。</p>
+<hr>
+<h2 id="考点-6：margin-0-auto-水平居中计算"><a href="#考点-6：margin-0-auto-水平居中计算" class="headerlink" title="考点 6：margin: 0 auto 水平居中计算"></a>考点 6：margin: 0 auto 水平居中计算</h2><div class="exam-badges"><span class="exam-badge must">★ 必考</span><span class="exam-badge score">填空 2 空</span></div>
+
+<p>纯计算题，公式一行：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">单侧 margin = （父盒子宽度 − 子盒子宽度） ÷ 2</span><br></pre></td></tr></table></figure>
+
+<h3 id="例题演练"><a href="#例题演练" class="headerlink" title="例题演练"></a>例题演练</h3><p><strong>题目</strong>：父盒子宽 1000px，子盒子 <code>width: 600px</code>，用 <code>margin: 0 auto</code> 水平居中。求左右外边距各是多少？</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(1000 − 600) ÷ 2 = 200px</span><br></pre></td></tr></table></figure>
+
+<p><strong>答</strong>：左右各 200px，上下为 0。</p>
+<h3 id="再练一题"><a href="#再练一题" class="headerlink" title="再练一题"></a>再练一题</h3><p><strong>题目</strong>：父盒子 1200px，子盒子 900px，左右 margin 相等，求单侧 margin。</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(1200 − 900) ÷ 2 = 150px</span><br></pre></td></tr></table></figure>
+
+<div class="pitfall"><span class="pitfall-label">两个前提别漏</span>
+`margin: 0 auto` 能居中，必须同时满足：<br>
+① 元素是<b>块级元素</b>（行内元素无效）；<br>
+② 元素有<b>明确宽度</b>（宽度是 auto 时它会撑满父元素，没有居中可言）。
+</div>
+
+<div class="mnemonic"><span class="mnemonic-label">口诀</span>
+<b>「父减子，再除二，就是单边外边距。」</b>
+</div>
+
+<hr>
+<h2 id="考点-7：rem-移动端适配计算"><a href="#考点-7：rem-移动端适配计算" class="headerlink" title="考点 7：rem 移动端适配计算"></a>考点 7：rem 移动端适配计算</h2><div class="exam-badges"><span class="exam-badge must">★ 必考</span><span class="exam-badge score">填空 4 空</span></div>
+
+<h3 id="先理解-rem-是什么"><a href="#先理解-rem-是什么" class="headerlink" title="先理解 rem 是什么"></a>先理解 rem 是什么</h3><p><code>rem</code> 是<strong>相对于根元素 <code>&lt;html&gt;</code> 的 <code>font-size</code></strong> 的长度单位。</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">html</span> &#123; <span class="attribute">font-size</span>: <span class="number">20px</span>; &#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.box</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">5rem</span>;    <span class="comment">/* 5 × 20px = 100px */</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>只要改 <code>&lt;html&gt;</code> 的 <code>font-size</code>，所有用 <code>rem</code> 写的尺寸会<strong>整体等比缩放</strong>——这就是移动端适配的原理。</p>
+<h3 id="计算公式"><a href="#计算公式" class="headerlink" title="计算公式"></a>计算公式</h3><figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">根字体大小 = 设备屏幕宽度 × (设计稿 1rem 对应 px ÷ 设计稿总宽度)</span><br></pre></td></tr></table></figure>
+
+<p>用字母写更直观：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">新根字号 = 新屏宽 × 基准字号 ÷ 设计稿宽度</span><br></pre></td></tr></table></figure>
+
+<h3 id="试卷原题"><a href="#试卷原题" class="headerlink" title="试卷原题"></a>试卷原题</h3><blockquote>
+<p>设计稿宽度 <strong>375px</strong>，设计稿里 <strong>1rem 对应 20px</strong>；现在设备屏幕宽度是 <strong>414px</strong>，求根字体大小。</p>
+</blockquote>
+<p>代入公式：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">根字体 = 414 × 20 ÷ 375</span><br><span class="line">       = 8280 ÷ 375</span><br><span class="line">       = 22.08</span><br><span class="line">       ≈ 22px（取整数）</span><br></pre></td></tr></table></figure>
+
+<p><strong>答</strong>：22px。</p>
+<div class="note info flat"><p><strong>为什么这样算</strong>：设计稿里 1rem &#x3D; 20px，相当于”1rem 占设计稿宽度的 20&#x2F;375”。到了 414px 的屏幕上，1rem 应该占同样的比例，所以是 <code>414 × (20/375) = 22.08</code>。本质是<strong>保持比例不变</strong>。</p>
+</div>
+
+<h3 id="记住这个数：375-→-414"><a href="#记住这个数：375-→-414" class="headerlink" title="记住这个数：375 → 414"></a>记住这个数：375 → 414</h3><p><code>375</code> 和 <code>414</code> 是最常见的两个设计稿&#x2F;设备宽度，它们之间的缩放系数约为 <strong>1.104</strong>。看到这两个数字，可以直接 <code>20 × 1.104 ≈ 22</code> 快速验算。</p>
+<div class="mnemonic"><span class="mnemonic-label">口诀</span>
+<b>「新屏宽 × 旧字号 ÷ 设计稿宽」，先乘后除，最后取整。</b>
+</div>
+
+<div class="pitfall"><span class="pitfall-label">易错点</span>
+别把公式记成"设计稿宽 ÷ 新屏宽"。判断方向的办法：<b>屏幕变宽 → 根字号必须变大</b>。414 比 375 宽，所以结果 22 比 20 大，方向正确。<br>
+如果算出来比原来小，肯定是分子分母颠倒了。
+</div>
+
+<hr>
+<h2 id="CSS-全章速查表"><a href="#CSS-全章速查表" class="headerlink" title="CSS 全章速查表"></a>CSS 全章速查表</h2><p>考前最后 5 分钟看这一张表就够了：</p>
+<table>
+<thead>
+<tr>
+<th>考点</th>
+<th>一句话答案</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>relative</code></td>
+<td>相对自身原位，<strong>不脱离</strong>文档流，原位置保留</td>
+</tr>
+<tr>
+<td><code>absolute</code></td>
+<td>相对最近的<strong>已定位祖先</strong>，脱离文档流</td>
+</tr>
+<tr>
+<td><code>fixed</code></td>
+<td>相对<strong>浏览器视口</strong>，滚动不动</td>
+</tr>
+<tr>
+<td>伪类 &#x2F; 伪元素</td>
+<td>单冒号是伪类（<code>:hover</code>），双冒号是伪元素（<code>::after</code>）</td>
+</tr>
+<tr>
+<td>子代选择器</td>
+<td><code>&gt;</code> 只管直接子元素，空格管所有后代</td>
+</tr>
+<tr>
+<td>优先级</td>
+<td><code>!important</code> &gt; 内联 &gt; <strong>id &gt; class &gt; 标签</strong></td>
+</tr>
+<tr>
+<td>清列表 &#x2F; 去下划线</td>
+<td><code>list-style: none</code> &#x2F; <code>text-decoration: none</code></td>
+</tr>
+<tr>
+<td>Flex 主轴</td>
+<td><code>justify-content</code>（主轴）、<code>align-items</code>（交叉轴）</td>
+</tr>
+<tr>
+<td>Flex 换行</td>
+<td>默认 <code>nowrap</code>，要换行写 <code>flex-wrap: wrap</code></td>
+</tr>
+<tr>
+<td>Flex 分空间</td>
+<td><code>flex-grow: 1</code></td>
+</tr>
+<tr>
+<td>Grid 自适应列</td>
+<td><code>repeat(auto-fill, minmax(250px, 1fr))</code></td>
+</tr>
+<tr>
+<td>max-width</td>
+<td>视口 <strong>≤</strong> 该值生效</td>
+</tr>
+<tr>
+<td>min-width</td>
+<td>视口 <strong>≥</strong> 该值生效</td>
+</tr>
+<tr>
+<td>移动优先</td>
+<td>先写小屏，用 <code>min-width</code> 向大屏加</td>
+</tr>
+<tr>
+<td>margin auto</td>
+<td>单侧 &#x3D; (父宽 − 子宽) ÷ 2</td>
+</tr>
+<tr>
+<td>rem 计算</td>
+<td>新根字号 &#x3D; 新屏宽 × 旧字号 ÷ 设计稿宽</td>
+</tr>
+</tbody></table>
+<h2 id="自测"><a href="#自测" class="headerlink" title="自测"></a>自测</h2><details class="toggle" ><summary class="toggle-button" style="">4 道自测题（点开看答案）</summary><div class="toggle-content"><p><strong>1. 单选题：元素设置 <code>position: relative</code> 后，下列说法正确的是（　）</strong></p>
+<p>A. 元素脱离文档流，原位置被挤占<br>B. 元素不脱离文档流，原位置保留<br>C. 元素相对浏览器视口定位<br>D. 元素会变成块级元素</p>
+<details><summary>答案</summary>
+
+<p><strong>B</strong></p>
+<p><code>relative</code> 不脱离文档流、原位置保留，参照物是自身原来的位置，且不改变 display。</p>
+</details>
+
+<hr>
+<p><strong>2. 选择题：伪元素是（　）</strong></p>
+<p>A. <code>:hover</code>　B. <code>::after</code>　C. <code>:focus</code>　D. <code>::first-letter</code>　E. <code>:nth-child</code></p>
+<details><summary>答案</summary>
+
+<p><strong>B、D</strong></p>
+<p>双冒号 <code>::</code> 是伪元素；单冒号 <code>:</code> 是伪类。</p>
+</details>
+
+<hr>
+<p><strong>3. 填空题：父盒子宽 1000px，子盒子宽 400px，用 <code>margin: 0 auto</code> 居中，则单侧 margin 为 <code>______</code>。</strong></p>
+<details><summary>答案</summary>
+
+<p><strong>300px</strong></p>
+<p>(1000 − 400) ÷ 2 &#x3D; 300。</p>
+</details>
+
+<hr>
+<p><strong>4. 填空题：设计稿宽 750px，1rem 对应 30px，设备屏宽 375px，则根字体大小为 <code>______</code>。</strong></p>
+<details><summary>答案</summary>
+
+<p><strong>15px</strong></p>
+<p>375 × 30 ÷ 750 &#x3D; 15。</p>
+<p>顺便验证方向：屏幕 375 只有设计稿 750 的一半，所以根字号也应该是 30 的一半 &#x3D; 15，正确。</p>
+</details></div></details>
+
+<hr>
+<p><strong>本系列文章</strong></p>
+<ul>
+<li><a href="/2026/10/03/final-review-00-overview/">（零）分数地图与复习路线</a></li>
+<li><a href="/2026/10/03/final-review-01-html/">（一）HTML 考点</a></li>
+<li><a href="/2026/10/03/final-review-03-js-basic/">（三）JavaScript 考点（上）</a></li>
+<li><a href="/2026/10/03/final-review-04-js-advanced/">（四）JavaScript 考点（下）</a></li>
+<li><a href="/2026/10/03/final-review-05-coding-templates/">（五）编程题模板 + 程序填空套路</a></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://f-zx.github.io">Fzx</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://f-zx.github.io/2026/10/03/final-review-02-css/">https://f-zx.github.io/2026/10/03/final-review-02-css/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://f-zx.github.io" target="_blank">Fzx's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/CSS/">CSS</a><a class="post-meta__tags" href="/tags/Flex/">Flex</a><a class="post-meta__tags" href="/tags/Grid/">Grid</a><a class="post-meta__tags" href="/tags/%E6%9C%9F%E6%9C%AB%E5%A4%8D%E4%B9%A0/">期末复习</a></div><div class="post-share"><div class="social-share" data-image="/img/touxiang.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/10/03/final-review-03-js-basic/" title="Web 前端期末复习（三）：JavaScript 考点（上）"><img class="cover" src="/img/touxiang.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Web 前端期末复习（三）：JavaScript 考点（上）</div></div><div class="info-2"><div class="info-item-1"> JavaScript 是这套卷子的绝对重心：13 个考点、独占 40 分编程题。本篇整理前 10 个，基本都在单选、填空、多选里出；后 3 个（数组高阶方法、for…in、fetch）留给下一篇。 这里的每个考点都有一个”陷阱点”，提纲专门用 ⚠️ 标注过，我在下面都单独框出来了。    考点 1：对象解构赋值 + 默认值★ 必考单选 5 分  两个符号别搞混1const &#123; 属性名: 新变量名, 属性 = 默认值 &#125; = 对象;     符号 含义 作用    : 冒号 属性重命名 把 username 取出来存到 uname 里   = 等号 默认值 属性取不到时用这个值   口诀 「冒号改名，等号兜底。」   默认值什么时候才生效这是本考点的全部陷阱所在，提纲用了感叹号强调：  默认值生效条件：属性不存在 或者 属性值为 undefined。对象有这个属性，默认值就不生效！  真题拆解12345678const user = &#123; username: &quot;wangwu&quot;, age: 22 &#125;;const &#123;...</div></div></div></a><a class="pagination-related" href="/2026/10/03/final-review-01-html/" title="Web 前端期末复习（一）：HTML 考点"><img class="cover" src="/img/touxiang.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Web 前端期末复习（一）：HTML 考点</div></div><div class="info-2"><div class="info-item-1"> HTML 在这一科里分量最轻——只有 2 个考点，主要出单选和填空。但正因为量小，这几分属于”必须拿到”的送分题，考前半小时就能拿下。    考点 1：HTML 常用标签★ 必考单选填空基础送分  两个自闭合标签   标签 作用 要点    &lt;hr&gt; 水平分割线 单标签，没有 &lt;/hr&gt;   &lt;br&gt; 强制换行 单标签，没有 &lt;/br&gt;   这两个最容易考的就是”谁是分割线、谁是换行”，一字之差，别记反。 记法 hr 的 h 就是 horizontal（水平）；br 的 b 就是 break（断开）。 所以 horizonal → 横线（分割线），break → 换行。   块级元素 与 行内元素这是本节的核心考点，几乎必出多选题。直接背清单：    类型 代表标签 是否独占一行 能否设置宽高    行内（内联）元素 span、a、em、strong ❌ 不独占 ❌ 宽高无效   块级元素 div、h1~h6、p、ul ✅ 独占一行 ✅ 可以设置   记忆时抓住两条本质区别：“独占一行” 和 “宽高有效”。题目问”以下哪个是块级元...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2026/10/03/final-review-05-coding-templates/" title="Web 前端期末复习（五）：四大编程题模板 + 程序填空套路"><img class="cover" src="/img/touxiang.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-03</div><div class="info-item-2">Web 前端期末复习（五）：四大编程题模板 + 程序填空套路</div></div><div class="info-2"><div class="info-item-1"> 这是整个系列最重要的一篇。编程 40 分 + 程序填空 30 分 &#x3D; 70 分全在这里，而它的特点是：题目是固定的，答案是模板化的。 也就是说，这 70 分本质上是一道”默写题”——你背下来，就能拿。    一、程序填空（30 分）的三类套路程序填空的考法是：给一段挖了空的代码，让你补全。提纲明确说只会出这三类：    类型 考什么 难度    CSS 补全 选择器、flex 属性、伪类 低，靠认属性名   Flex + 媒体查询 响应式断点 低，靠认 min&#x2F;max   JSON.parse 的回调 回调签名与返回值 中，要理解逻辑   通用套路：先读注释，再找对称三看 一看注释——注释里往往直接说了"这里要设主轴对齐""这里处理数组"，等于给答案； 二看对称——代码里前面出现过的属性名，后面大概率要填同类的； 三看括号——CSS 冒号后面、JS 函数括号里缺什么，靠上下文推断。   类型一：CSS 补全常见空位就这几个，认属性名即可： 1234567891011121314151617181920/* 空：开启弹性布局 */display: flex;/...</div></div></div></a><a class="pagination-related" href="/2026/10/03/web-frontend-03-css-layout/" title="Web 前端学习笔记（三）：CSS 布局（浮动 · 定位 · Flex）"><img class="cover" src="/img/touxiang.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-03</div><div class="info-item-2">Web 前端学习笔记（三）：CSS 布局（浮动 · 定位 · Flex）</div></div><div class="info-2"><div class="info-item-1"> 浮动、定位、Flex 解决的是同一类问题——把元素摆到想要的位置，只是属于不同年代的方案。放在一起对比，比分开学更容易记住各自适合什么场景。    一、浮动 floatdemo 9：CSS 浮动 float 最初的用途是实现”文字环绕图片”的效果（就像杂志排版），后来被大量拿来搭多列布局。它的取值很简单： 123456789101112.left-son &#123;    width: 100px;    height: 100px;    background-color: yellow;    float: left;        /* 向左浮动 */&#125;.right-son &#123;    width: 100px;    height: 100px;    background-color: orange;    float: right;       /* 向右浮动 */&#125;  浮动的元素会尽量靠向指定方向，多个同向浮动元素会依次紧贴排列，一行放不下就换行。 半脱离文档流浮动元素会”浮”起来：它原来占据的位置会让给后面的元素，但行内内容（文字）...</div></div></div></a><a class="pagination-related" href="/2026/10/03/final-review-04-js-advanced/" title="Web 前端期末复习（四）：JavaScript 考点（下）"><img class="cover" src="/img/touxiang.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-03</div><div class="info-item-2">Web 前端期末复习（四）：JavaScript 考点（下）</div></div><div class="info-2"><div class="info-item-1"> 这 3 个考点要特别注意：它们不只是选择题，而是直接决定编程题能不能拿分。  考点 11 reduce &#x2F; filter → 编程第 2 题 考点 13 fetch + 模板渲染 → 编程第 4 题（14 分，全卷最大单题）     考点 11：数组 reduce 与 filter★ 必考编程第 2 题约 8 分  两个方法的分工   方法 作用 返回值    reduce(回调, 初始值) 把数组汇总成一个值 汇总结果（常用于求和）   filter(回调) 把符合条件的元素留下 新数组   reduce 的四个参数123arr.reduce((acc, cur, index, array) =&gt; &#123;    return acc + cur;&#125;, 0);     参数 含义    acc 累加器（上一轮的返回值）   cur 当前元素   index 当前下标（可省）   array 原数组（可省）   第二个实参 0 初始值，也就是 acc 的起点   求和的固定写法： 1const sum = arr.reduce((acc, cur)...</div></div></div></a><a class="pagination-related" href="/2026/10/03/final-review-01-html/" title="Web 前端期末复习（一）：HTML 考点"><img class="cover" src="/img/touxiang.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-03</div><div class="info-item-2">Web 前端期末复习（一）：HTML 考点</div></div><div class="info-2"><div class="info-item-1"> HTML 在这一科里分量最轻——只有 2 个考点，主要出单选和填空。但正因为量小，这几分属于”必须拿到”的送分题，考前半小时就能拿下。    考点 1：HTML 常用标签★ 必考单选填空基础送分  两个自闭合标签   标签 作用 要点    &lt;hr&gt; 水平分割线 单标签，没有 &lt;/hr&gt;   &lt;br&gt; 强制换行 单标签，没有 &lt;/br&gt;   这两个最容易考的就是”谁是分割线、谁是换行”，一字之差，别记反。 记法 hr 的 h 就是 horizontal（水平）；br 的 b 就是 break（断开）。 所以 horizonal → 横线（分割线），break → 换行。   块级元素 与 行内元素这是本节的核心考点，几乎必出多选题。直接背清单：    类型 代表标签 是否独占一行 能否设置宽高    行内（内联）元素 span、a、em、strong ❌ 不独占 ❌ 宽高无效   块级元素 div、h1~h6、p、ul ✅ 独占一行 ✅ 可以设置   记忆时抓住两条本质区别：“独占一行” 和 “宽高有效”。题目问”以下哪个是块级元...</div></div></div></a><a class="pagination-related" href="/2026/10/03/final-review-03-js-basic/" title="Web 前端期末复习（三）：JavaScript 考点（上）"><img class="cover" src="/img/touxiang.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-03</div><div class="info-item-2">Web 前端期末复习（三）：JavaScript 考点（上）</div></div><div class="info-2"><div class="info-item-1"> JavaScript 是这套卷子的绝对重心：13 个考点、独占 40 分编程题。本篇整理前 10 个，基本都在单选、填空、多选里出；后 3 个（数组高阶方法、for…in、fetch）留给下一篇。 这里的每个考点都有一个”陷阱点”，提纲专门用 ⚠️ 标注过，我在下面都单独框出来了。    考点 1：对象解构赋值 + 默认值★ 必考单选 5 分  两个符号别搞混1const &#123; 属性名: 新变量名, 属性 = 默认值 &#125; = 对象;     符号 含义 作用    : 冒号 属性重命名 把 username 取出来存到 uname 里   = 等号 默认值 属性取不到时用这个值   口诀 「冒号改名，等号兜底。」   默认值什么时候才生效这是本考点的全部陷阱所在，提纲用了感叹号强调：  默认值生效条件：属性不存在 或者 属性值为 undefined。对象有这个属性，默认值就不生效！  真题拆解12345678const user = &#123; username: &quot;wangwu&quot;, age: 22 &#125;;const &#123;...</div></div></div></a><a class="pagination-related" href="/2026/10/03/web-frontend-02-css-basics/" title="Web 前端学习笔记（二）：CSS 基础"><img class="cover" src="/img/touxiang.jpg" alt="cover"><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2026-10-03</div><div class="info-item-2">Web 前端学习笔记（二）：CSS 基础</div></div><div class="info-2"><div class="info-item-1"> 上一篇整理了 HTML 的结构，这一篇进入 CSS ——负责”长什么样”的部分。同样，每节都附了可以直接打开的 demo。    一、三种导入方式demo 5：CSS 导入方式 CSS 有三种写进页面的方式： 1. 外部样式 —— 单独写成 .css 文件，用 &lt;link&gt; 引入。实际项目里基本都用这种，因为可以被多个页面复用，也能被浏览器缓存。 1&lt;link rel=&quot;stylesheet&quot; href=&quot;css/style.css&quot;&gt;  1234/* css/style.css */h3 &#123;    color: yellow;&#125;  2. 内部样式 —— 写在 &lt;head&gt; 里的 &lt;style&gt; 标签中，只对当前页面生效。 123456789&lt;style&gt;    p &#123;        color: blue;        font-size: 25px;    &#125;    h2 &#123;        color: pink;    &...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">Fzx</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">12</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">19</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/f-zx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/f-zx" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:1280265757@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%80%83%E7%82%B9-1%EF%BC%9Aposition-%E5%AE%9A%E4%BD%8D%E5%85%A8%E5%A5%97"><span class="toc-number">1.</span> <span class="toc-text">考点 1：position 定位全套</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#static%EF%BC%9A%E9%BB%98%E8%AE%A4%E5%80%BC"><span class="toc-number">1.1.</span> <span class="toc-text">static：默认值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#relative%EF%BC%9A%E7%9B%B8%E5%AF%B9%E5%AE%9A%E4%BD%8D%EF%BC%88%E6%9C%80%E5%AE%B9%E6%98%93%E8%A2%AB%E6%89%A3%E5%88%86%E7%9A%84%E9%82%A3%E4%B8%AA%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">relative：相对定位（最容易被扣分的那个）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#absolute%EF%BC%9A%E7%BB%9D%E5%AF%B9%E5%AE%9A%E4%BD%8D"><span class="toc-number">1.3.</span> <span class="toc-text">absolute：绝对定位</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fixed%EF%BC%9A%E5%9B%BA%E5%AE%9A%E5%AE%9A%E4%BD%8D"><span class="toc-number">1.4.</span> <span class="toc-text">fixed：固定定位</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E9%80%89%E5%B8%B8%E8%80%83%EF%BC%9A%E5%93%AA%E4%BA%9B%E4%BC%9A%E8%84%B1%E7%A6%BB%E6%96%87%E6%A1%A3%E6%B5%81"><span class="toc-number">1.5.</span> <span class="toc-text">多选常考：哪些会脱离文档流</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%80%83%E7%82%B9-2%EF%BC%9A%E9%80%89%E6%8B%A9%E5%99%A8%E3%80%81%E4%BC%98%E5%85%88%E7%BA%A7%E3%80%81%E4%BC%AA%E7%B1%BB%E3%80%81%E4%BC%AA%E5%85%83%E7%B4%A0"><span class="toc-number">2.</span> <span class="toc-text">考点 2：选择器、优先级、伪类、伪元素</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%AA%E7%B1%BB%E4%B8%8E%E4%BC%AA%E5%85%83%E7%B4%A0%EF%BC%9A%E7%9C%8B%E5%86%92%E5%8F%B7%E4%B8%AA%E6%95%B0"><span class="toc-number">2.1.</span> <span class="toc-text">伪类与伪元素：看冒号个数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%90%E4%BB%A3%E9%80%89%E6%8B%A9%E5%99%A8"><span class="toc-number">2.2.</span> <span class="toc-text">子代选择器 &gt;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%89%E6%8B%A9%E5%99%A8%E4%BC%98%E5%85%88%E7%BA%A7"><span class="toc-number">2.3.</span> <span class="toc-text">选择器优先级</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%9C%9F%E9%A2%98%E4%BE%8B%E9%A2%98"><span class="toc-number">2.4.</span> <span class="toc-text">真题例题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%A4%E4%B8%AA%E6%B8%85%E9%99%A4%E9%BB%98%E8%AE%A4%E6%A0%B7%E5%BC%8F"><span class="toc-number">2.5.</span> <span class="toc-text">两个清除默认样式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%80%83%E7%82%B9-3%EF%BC%9AFlex-%E5%BC%B9%E6%80%A7%E5%B8%83%E5%B1%80"><span class="toc-number">3.</span> <span class="toc-text">考点 3：Flex 弹性布局</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AD%E4%B8%AA%E5%BF%85%E8%83%8C%E5%B1%9E%E6%80%A7"><span class="toc-number">3.1.</span> <span class="toc-text">六个必背属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#justify-content-%E7%9A%84%E4%B8%89%E7%A7%8D-space-%E5%80%BC"><span class="toc-number">3.2.</span> <span class="toc-text">justify-content 的三种 space 值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#flex-grow-1-%E6%98%AF%E4%BB%80%E4%B9%88%E6%95%88%E6%9E%9C"><span class="toc-number">3.3.</span> <span class="toc-text">flex-grow: 1 是什么效果</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%80%83%E7%82%B9-4%EF%BC%9AGrid-%E7%BD%91%E6%A0%BC%E5%B8%83%E5%B1%80"><span class="toc-number">4.</span> <span class="toc-text">考点 4：Grid 网格布局</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A2%98%E7%9B%AE%E8%A6%81%E6%B1%82%E9%95%BF%E4%BB%80%E4%B9%88%E6%A0%B7"><span class="toc-number">4.1.</span> <span class="toc-text">题目要求长什么样</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%87%E5%87%86%E7%AD%94%E6%A1%88"><span class="toc-number">4.2.</span> <span class="toc-text">标准答案</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%80%83%E7%82%B9-5%EF%BC%9A%E5%AA%92%E4%BD%93%E6%9F%A5%E8%AF%A2-%E4%B8%8E-%E7%A7%BB%E5%8A%A8%E4%BC%98%E5%85%88"><span class="toc-number">5.</span> <span class="toc-text">考点 5：媒体查询 与 移动优先</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#max-width-%E5%92%8C-min-width-%E7%9A%84%E6%96%B9%E5%90%91"><span class="toc-number">5.1.</span> <span class="toc-text">max-width 和 min-width 的方向</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A7%BB%E5%8A%A8%E4%BC%98%E5%85%88"><span class="toc-number">5.2.</span> <span class="toc-text">移动优先</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%B9%E5%99%A8%E5%B1%85%E4%B8%AD"><span class="toc-number">5.3.</span> <span class="toc-text">容器居中</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%80%83%E7%82%B9-6%EF%BC%9Amargin-0-auto-%E6%B0%B4%E5%B9%B3%E5%B1%85%E4%B8%AD%E8%AE%A1%E7%AE%97"><span class="toc-number">6.</span> <span class="toc-text">考点 6：margin: 0 auto 水平居中计算</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BE%8B%E9%A2%98%E6%BC%94%E7%BB%83"><span class="toc-number">6.1.</span> <span class="toc-text">例题演练</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%8D%E7%BB%83%E4%B8%80%E9%A2%98"><span class="toc-number">6.2.</span> <span class="toc-text">再练一题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%80%83%E7%82%B9-7%EF%BC%9Arem-%E7%A7%BB%E5%8A%A8%E7%AB%AF%E9%80%82%E9%85%8D%E8%AE%A1%E7%AE%97"><span class="toc-number">7.</span> <span class="toc-text">考点 7：rem 移动端适配计算</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%88%E7%90%86%E8%A7%A3-rem-%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">7.1.</span> <span class="toc-text">先理解 rem 是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F"><span class="toc-number">7.2.</span> <span class="toc-text">计算公式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AF%95%E5%8D%B7%E5%8E%9F%E9%A2%98"><span class="toc-number">7.3.</span> <span class="toc-text">试卷原题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%B0%E4%BD%8F%E8%BF%99%E4%B8%AA%E6%95%B0%EF%BC%9A375-%E2%86%92-414"><span class="toc-number">7.4.</span> <span class="toc-text">记住这个数：375 → 414</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CSS-%E5%85%A8%E7%AB%A0%E9%80%9F%E6%9F%A5%E8%A1%A8"><span class="toc-number">8.</span> <span class="toc-text">CSS 全章速查表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E6%B5%8B"><span class="toc-number">9.</span> <span class="toc-text">自测</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/10/03/final-review-05-coding-templates/" title="Web 前端期末复习（五）：四大编程题模板 + 程序填空套路"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web 前端期末复习（五）：四大编程题模板 + 程序填空套路"/></a><div class="content"><a class="title" href="/2026/10/03/final-review-05-coding-templates/" title="Web 前端期末复习（五）：四大编程题模板 + 程序填空套路">Web 前端期末复习（五）：四大编程题模板 + 程序填空套路</a><time datetime="2026-10-03T15:58:00.000Z" title="发表于 2026-10-03 23:58:00">2026-10-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/03/final-review-04-js-advanced/" title="Web 前端期末复习（四）：JavaScript 考点（下）"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web 前端期末复习（四）：JavaScript 考点（下）"/></a><div class="content"><a class="title" href="/2026/10/03/final-review-04-js-advanced/" title="Web 前端期末复习（四）：JavaScript 考点（下）">Web 前端期末复习（四）：JavaScript 考点（下）</a><time datetime="2026-10-03T15:56:00.000Z" title="发表于 2026-10-03 23:56:00">2026-10-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/03/final-review-03-js-basic/" title="Web 前端期末复习（三）：JavaScript 考点（上）"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web 前端期末复习（三）：JavaScript 考点（上）"/></a><div class="content"><a class="title" href="/2026/10/03/final-review-03-js-basic/" title="Web 前端期末复习（三）：JavaScript 考点（上）">Web 前端期末复习（三）：JavaScript 考点（上）</a><time datetime="2026-10-03T15:54:00.000Z" title="发表于 2026-10-03 23:54:00">2026-10-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/03/final-review-02-css/" title="Web 前端期末复习（二）：CSS 考点全解"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web 前端期末复习（二）：CSS 考点全解"/></a><div class="content"><a class="title" href="/2026/10/03/final-review-02-css/" title="Web 前端期末复习（二）：CSS 考点全解">Web 前端期末复习（二）：CSS 考点全解</a><time datetime="2026-10-03T15:52:00.000Z" title="发表于 2026-10-03 23:52:00">2026-10-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/10/03/final-review-01-html/" title="Web 前端期末复习（一）：HTML 考点"><img src="/img/touxiang.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Web 前端期末复习（一）：HTML 考点"/></a><div class="content"><a class="title" href="/2026/10/03/final-review-01-html/" title="Web 前端期末复习（一）：HTML 考点">Web 前端期末复习（一）：HTML 考点</a><time datetime="2026-10-03T15:50:00.000Z" title="发表于 2026-10-03 23:50:00">2026-10-03</time></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By Fzx</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.6.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.6.0"></script><script src="/js/main.js?v=5.6.0"></script><div class="js-pjax"></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-show-text.min.js" data-mobile="true" data-text="THIS,IS,MY,BLOG" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
