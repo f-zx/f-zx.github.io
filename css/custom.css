@@ -201,58 +201,44 @@
 }
 
 /* ============================================================
-   背景与卡片
-   页面底色（#web_bg）由 _config.butterfly.yml 的 background 指定，
-   是 preview.gif 转出的动图 WebP；#web_bg 本身 position: fixed，
-   所以上下滚动时背景不会移动。
+   页面背景：整屏视频（固定，不随滚动移动）
+   原来那两个 GIF 转出的 WebP 太小（192/256px）铺全屏太糊，已弃用。
+   现在由 source/js/page-bg-video.js 在 body 里插入 <video class="page-bg-video">。
+   _config.butterfly.yml 的 background 保留一个深色作为兜底
+   （视频没加载出来 / 窄屏 / 减少动效时看到的颜色）。
    ============================================================ */
 
+.page-bg-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  object-position: center center;
+  z-index: -999;          /* 和主题的 #web_bg 同层，靠 DOM 顺序压在它上面 */
+  border: 0;
+  pointer-events: none;
+}
+
+/* 视频之外再加一层很轻的压暗，让白色卡片和文字更稳 */
+.page-bg-video::after {
+  content: none;
+}
+
 /* 卡片半透明而不是纯白 —— 这是一个 CSS 变量，
-   首页卡片、侧栏卡片、分页按钮、文章内容卡片全部读它，
-   改一处就整体生效。 */
+   首页卡片、侧栏卡片、分页按钮、文章内容卡片全部读它，改一处就整体生效。 */
 :root {
-  --card-bg: rgba(255, 255, 255, 0.8);
+  --card-bg: rgba(255, 255, 255, 0.86);
 }
 
 [data-theme="dark"] {
-  --card-bg: rgba(20, 24, 32, 0.82);
+  --card-bg: rgba(18, 20, 26, 0.86);
 }
 
-/* 文章内容区铺 preview1.gif 转出的动图，上面压一层半透明白，
-   保证正文仍然清晰可读。想让它更明显，把 0.82 调小；想更淡，调大。
-   注意：文章页的容器是 #post（layout/post.pug），普通页面是 #page，
-   两个都写上，文章页和 /review/ 这类内容页都会生效。 */
-#post,
-#page:not(.nc) {
-  background-image: linear-gradient(
-      rgba(255, 255, 255, 0.78),
-      rgba(255, 255, 255, 0.78)
-    ),
-    url("/img/bg-cat.webp");
-  background-size: cover, cover;
-  background-position: center center, center center;
-  background-repeat: no-repeat, no-repeat;
-  /* 关键：文章卡片可能上万平方米像素高，用 local/scroll 会把图放大到看不出内容；
-     用 fixed 让它按「视口」尺寸显示 —— 同时也满足"滚动时背景不动" */
-  background-attachment: fixed, fixed;
-}
-
-[data-theme="dark"] #post,
-[data-theme="dark"] #page:not(.nc) {
-  background-image: linear-gradient(
-      rgba(18, 20, 26, 0.84),
-      rgba(18, 20, 26, 0.84)
-    ),
-    url("/img/bg-cat.webp");
-  background-attachment: fixed, fixed;
-}
-
-/* 页面底色：确保铺满、居中裁切（横屏观感）、并且固定不随滚动移动 */
-#web_bg {
-  background-attachment: fixed !important;
-  background-position: center center !important;
-  background-size: cover !important;
-  background-repeat: no-repeat !important;
+/* 深色背景之上，正文小字（如日期、标签）稍微提亮一点更清楚 */
+[data-theme="dark"] {
+  --card-meta: #9aa3ad;
 }
 
 
