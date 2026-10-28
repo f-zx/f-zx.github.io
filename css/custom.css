@@ -168,8 +168,9 @@
   pointer-events: none;
 }
 
-/* 视频层之上再补一层轻压暗，保证白色标题在明亮天空上依然清晰。
-   主题自带的 mask.header 只有一层，叠上这层更稳。 */
+/* 视频层之上再补一层轻压暗。注意：主题自带的 mask.header 也有一层 0.3 的黑，
+   两层叠起来会明显发暗，所以这里把主题那层关掉（见下方 ::before 规则），
+   只保留这一层很轻的渐变，暗部只放在顶部导航和底部箭头处。 */
 #page-header.has-hero-video::after {
   content: "";
   position: absolute;
@@ -181,10 +182,15 @@
   pointer-events: none;
   background: linear-gradient(
     180deg,
-    rgba(0, 0, 0, 0.45) 0%,
-    rgba(0, 0, 0, 0.18) 45%,
-    rgba(0, 0, 0, 0.55) 100%
+    rgba(0, 0, 0, 0.26) 0%,
+    rgba(0, 0, 0, 0.06) 45%,
+    rgba(0, 0, 0, 0.34) 100%
   );
+}
+
+/* 关掉主题自带的整屏黑色蒙版，避免和上面这层叠加过暗 */
+#page-header.has-hero-video::before {
+  display: none;
 }
 
 /* 移动端：视频很吃流量，窄屏直接不插视频（JS 里也做了判断） */
@@ -193,4 +199,60 @@
     display: none;
   }
 }
+
+/* ============================================================
+   背景与卡片
+   页面底色（#web_bg）由 _config.butterfly.yml 的 background 指定，
+   是 preview.gif 转出的动图 WebP；#web_bg 本身 position: fixed，
+   所以上下滚动时背景不会移动。
+   ============================================================ */
+
+/* 卡片半透明而不是纯白 —— 这是一个 CSS 变量，
+   首页卡片、侧栏卡片、分页按钮、文章内容卡片全部读它，
+   改一处就整体生效。 */
+:root {
+  --card-bg: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="dark"] {
+  --card-bg: rgba(20, 24, 32, 0.82);
+}
+
+/* 文章内容区铺 preview1.gif 转出的动图，上面压一层半透明白，
+   保证正文仍然清晰可读。想让它更明显，把 0.82 调小；想更淡，调大。
+   注意：文章页的容器是 #post（layout/post.pug），普通页面是 #page，
+   两个都写上，文章页和 /review/ 这类内容页都会生效。 */
+#post,
+#page:not(.nc) {
+  background-image: linear-gradient(
+      rgba(255, 255, 255, 0.78),
+      rgba(255, 255, 255, 0.78)
+    ),
+    url("/img/bg-cat.webp");
+  background-size: cover, cover;
+  background-position: center center, center center;
+  background-repeat: no-repeat, no-repeat;
+  /* 关键：文章卡片可能上万平方米像素高，用 local/scroll 会把图放大到看不出内容；
+     用 fixed 让它按「视口」尺寸显示 —— 同时也满足"滚动时背景不动" */
+  background-attachment: fixed, fixed;
+}
+
+[data-theme="dark"] #post,
+[data-theme="dark"] #page:not(.nc) {
+  background-image: linear-gradient(
+      rgba(18, 20, 26, 0.84),
+      rgba(18, 20, 26, 0.84)
+    ),
+    url("/img/bg-cat.webp");
+  background-attachment: fixed, fixed;
+}
+
+/* 页面底色：确保铺满、居中裁切（横屏观感）、并且固定不随滚动移动 */
+#web_bg {
+  background-attachment: fixed !important;
+  background-position: center center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+}
+
 
