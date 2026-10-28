@@ -140,3 +140,57 @@
     padding: 0.6rem 0.75rem;
   }
 }
+
+/* ============================================================
+   首页 hero 视频背景
+   由 source/js/hero-video.js 在首页 #page-header 里插入 <video>。
+   这里只负责定位与层级。
+   ============================================================ */
+
+/* isolation: isolate 让 #page-header 成为独立的层叠上下文，
+   这样视频的 z-index: -1 只在本区内生效 ——
+   它会盖住 header 自己的渐变背景，但仍在导航、标题文字、遮罩之下。 */
+#page-header.has-hero-video {
+  isolation: isolate;
+  overflow: hidden;
+}
+
+#page-header.has-hero-video .hero-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  z-index: -1;
+  border: 0;
+  pointer-events: none;
+}
+
+/* 视频层之上再补一层轻压暗，保证白色标题在明亮天空上依然清晰。
+   主题自带的 mask.header 只有一层，叠上这层更稳。 */
+#page-header.has-hero-video::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.45) 0%,
+    rgba(0, 0, 0, 0.18) 45%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+}
+
+/* 移动端：视频很吃流量，窄屏直接不插视频（JS 里也做了判断） */
+@media screen and (max-width: 768px) {
+  #page-header.has-hero-video .hero-video {
+    display: none;
+  }
+}
+
