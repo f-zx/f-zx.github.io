@@ -12,8 +12,9 @@
 (function () {
   'use strict';
 
-  var SRC = '/videos/hero-bg.mp4';
-  var POSTER = '/videos/hero-bg.jpg';
+  // 首页 hero 用「义勇」暗调视频（1920x1080 / 12s / CRF24 / 1227KB）
+  var SRC = '/videos/giyu.mp4';
+  var POSTER = '/videos/giyu.jpg';
   var MIN_WIDTH = 769;      // 窄屏不加载视频
   var FALLBACK_DELAY = 2500; // load 事件迟迟不来时的兜底
 

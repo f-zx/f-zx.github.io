@@ -11,8 +11,9 @@
 (function () {
   'use strict';
 
-  var SRC = '/videos/page-bg.mp4';
-  var POSTER = '/videos/page-bg.jpg';
+  // 整屏页面背景用「彗星」视频（1280x720 / 10s / CRF28 / 512KB）
+  var SRC = '/videos/comet.mp4';
+  var POSTER = '/videos/comet.jpg';
   var MIN_WIDTH = 769;
   var FALLBACK_DELAY = 2600;
 

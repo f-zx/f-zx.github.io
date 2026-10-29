@@ -216,7 +216,10 @@
   height: 100vh;
   object-fit: cover;
   object-position: center center;
-  z-index: -999;          /* 和主题的 #web_bg 同层，靠 DOM 顺序压在它上面 */
+  /* 必须比主题的 #web_bg（z-index: -999）高一层：
+     两者同为 -999 时，#web_bg 因为在 DOM 里靠后，会直接盖住视频。
+     -998 仍然低于所有正文内容，所以只是"垫底但不被遮"。 */
+  z-index: -998;
   border: 0;
   pointer-events: none;
 }
