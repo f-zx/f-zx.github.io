@@ -193,6 +193,39 @@
   display: none;
 }
 
+/* ------------------------------------------------------------
+   hero 底部柔和过渡
+   目的：暗调的 hero（义勇，近乎全黑）下面紧接着是明亮的晚霞背景，
+   一刀切会有明显的硬边，这里让 hero 在最后 18% 慢慢溶解下去。
+
+   为什么用 mask 而不是叠一层渐变块：
+   渐变块只能"往上盖颜色"，盖出来的是一条色带；mask 是让内容逐渐透明，
+   透出的是真正的页面背景视频，过渡才自然。
+
+   注意：只把视频和压暗层做淡出，
+   header 自己的兜底渐变用 background: none 去掉，
+   否则淡出后会露出那层青绿色；导航和标题不参与淡出，保持清晰。
+   ------------------------------------------------------------ */
+#page-header.has-hero-video {
+  background: none !important;
+}
+
+#page-header.has-hero-video .hero-video,
+#page-header.has-hero-video::after {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 82%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 82%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
 /* 移动端：视频很吃流量，窄屏直接不插视频（JS 里也做了判断） */
 @media screen and (max-width: 768px) {
   #page-header.has-hero-video .hero-video {
